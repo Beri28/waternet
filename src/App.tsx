@@ -1,23 +1,18 @@
 import { useState } from 'react'
 import './App.css'
-import WithdrawalPage from './Pages/MoneyManagementPages/WithdrawalPage'
+import TransferMoney from './Pages/MoneyManagementPages/TransferMoney'
+import PayPalStylePayment from './Pages/MoneyManagementPages/TransactionType'
 
 // import Home from './pages/home/Home'
 
 function App() {
-  const [showWithdrawal, setShowWithdrawal] = useState(false);
+  const [count, setCount] = useState(0)
 
   return (
-    <div>
-      {showWithdrawal ? (
-        <WithdrawalPage onBack={() => setShowWithdrawal(false)} />
-      ) : (
-        <button onClick={() => setShowWithdrawal(true)}>
-          Open Withdrawal Page
-        </button>
-      )}
-    </div>
-  );
+    <>
+      <PayPalStylePayment/>
+    </>
+  )
 }
 
 export default App

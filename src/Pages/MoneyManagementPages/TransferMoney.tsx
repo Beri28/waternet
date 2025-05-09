@@ -152,7 +152,7 @@ const MoneyTransferPageWithQR: React.FC<MoneyTransferProps> = () => {
         </div>
 
         <div className="mt-6 text-center text-gray-500 text-sm">
-          <p>Secure money transfer powered by YourPlatform</p>
+          <p>Secure money transfer powered by NjangBiz</p>
           {/* Add links to terms of service, privacy policy, etc. */}
         </div>
       </div>
