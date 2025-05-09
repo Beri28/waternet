@@ -1,0 +1,42 @@
+@import "tailwindcss";
+:root {
+    --green:#4caf50;
+    --brown:#8B4513;
+    --beige:#f5f5dc;
+    --beige2:#f1f8e9;
+    --gray:#333333;
+    --yellow:#ffeb3b;
+}
+.texts{
+    color: var(--gray);
+}
+.texts-1{
+    color: var(--beige);
+}
+.buttons{
+    background-color: var(--yellow);
+}
+.buttons-2{
+    background-color: var(--green);
+}
+.buttons-2:hover{
+    background-color: #388e3c;
+    color:white;
+}
+.background-1{
+    background-color: var(--beige);
+}
+.background-2{
+    background-color: var(--beige2);
+}
+.color-1{
+    color: var(--green);
+}
+.color-2{
+    color: var(--brown);
+}
+.page-link li:hover{
+    cursor: pointer;
+    transform: scale(1.1);
+    transition: 500ms;
+}
