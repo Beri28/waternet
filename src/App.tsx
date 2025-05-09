@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import './App.css'
-import TransferMoney from './Pages/MoneyManagementPages/TransferMoney'
-import PayPalStylePayment from './Pages/MoneyManagementPages/TransactionType'
+import PayPalStylePayment from './Pages/MoneyManagementPages/TransactionType';
+import PhoneQRGenerator from './Pages/home_page/qr_code/qr_code_generator';
 
 // import Home from './pages/home/Home'
 
@@ -11,6 +11,8 @@ function App() {
   return (
     <>
       <PayPalStylePayment/>
+      {/* <PhoneQRGenerator/> */}
+
     </>
   )
 }
