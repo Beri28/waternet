@@ -12,6 +12,8 @@ import PinConfirmation from './Pages/PinConfirmationPages/PinPage';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import MoneyTransferPageWithQR from './Pages/MoneyManagementPages/TransferMoney';
 import QRCodeScannerPage from './Pages/MoneyManagementPages/QRCodePage';
+import CreateAssociation from './Pages/create_association/associations';
+import { AuthProvider } from './Context/Auth-Context';
 // import PhoneQRGenerator from './Pages/home_page/qr_code/qr_code_generator';
 
 // import Home from './pages/home/Home'
@@ -21,6 +23,7 @@ function App() {
 
   return (
     <>
+    <AuthProvider>
       {/* <PayPalStylePayment/> */}
       {/* <PhoneQRGenerator/> */}
       {/* <HomeScreen/> */}
@@ -34,12 +37,10 @@ function App() {
           <Route path='/transfer2' element={<PayPalStylePayment/>} />
           <Route path='/topUp' element={<TopUpScreen />} />
           <Route path='/qrCode' element={<QRCodeScannerPage />} />
+          <Route path='/create-njangi' element={<CreateAssociation/>} />
         </Routes>
       </BrowserRouter>
-      {/* <MoneyTransferPage/> */}
-      {/* <PayPalStylePayment/> */}
-      {/* <PhoneQRGenerator/> */}
-      
+    </AuthProvider>
 
     </>
   )
