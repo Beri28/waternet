@@ -6,7 +6,6 @@ import HomeScreen from './pages/home_page/HomeScreen';
 import TopUpScreen from './pages/MoneyManagementPages/TopUpAccountPage';
 import SignupForm from './pages/RgistrationPages/SignupPage';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
-<<<<<<< HEAD
 import MoneyTransferPageWithQR from './pages/MoneyManagementPages/TransferMoney';
 import QRCodeScannerPage from './pages/MoneyManagementPages/QRCodePage';
 import UserBusinessesScreen from './pages/BusinessAndAssociationPages/BusinessPage';
@@ -15,28 +14,14 @@ import CreateAssociation from './pages/create_association/associations';
 import LoginForm from './pages/RgistrationPages/LoginPage';
 import { ToastProvider } from './Context/toastContext';
 import AuthProvider from './Context/Auth-Context';
-export const baseUrl='https://njanbiz.onrender.com'
-=======
-import MoneyTransferPageWithQR from './Pages/MoneyManagementPages/TransferMoney';
-import QRCodeScannerPage from './Pages/MoneyManagementPages/QRCodePage';
-import UserBusinessesScreen from './Pages/BusinessAndAssociationPages/BusinessPage';
-import BusinessDetailsPage from './Pages/BusinessAndAssociationPages/BusinessDetailsPage';
-import UserDashboardPage from './Pages/UserDashboardPage';
-import LoginForm from './Pages/RgistrationPages/LoginPage';
-import CreateAssociation from './Pages/create_association/associations';
-import { AuthProvider } from './Context/Auth-Context';
-import UserAssociationScreen from './Pages/BusinessAndAssociationPages/AssociationPage';
-import AssociationPage from './Pages/BusinessAndAssociationPages/AssociationDetailsPage';
-// import PhoneQRGenerator from './Pages/home_page/qr_code/qr_code_generator';
-
->>>>>>> main
+import UserAssociationScreen from './pages/BusinessAndAssociationPages/AssociationPage';
+export const baseUrl=''
 // import Home from './pages/home/Home'
 
 function App() {
 
   return (
     <>
-<<<<<<< HEAD
     <ToastProvider
         containerProps={{
             position: 'top-right', // Default position
@@ -70,30 +55,11 @@ function App() {
             <Route path='/register' element={<SignupForm />} />
             <Route path='/businesses' element={<UserBusinessesScreen />} />
             <Route path='/create-njangi' element={<CreateAssociation/>} />
-            <Route path='/njangi' element={<CreateAssociation/>} />
+            <Route path='/njangi' element={<UserAssociationScreen />} />
           </Routes>
         </BrowserRouter>
       </AuthProvider>
     </ToastProvider>
-=======
-    <AuthProvider>
-      {/* <PayPalStylePayment/> */}
-      <AssociationPage/>
-      {/* <BrowserRouter>
-        <Routes>
-          <Route path='/' element={<HomeScreen/>} />
-          <Route path='/login' element={<LoginForm />} />
-          <Route path='/register' element={<SignupForm/>} />
-          <Route path='/personalAccountDetails' element={<UserDashboardPage />} />
-          <Route path='/withdraw' element={<WithdrawalPage />} />
-          <Route path='/transfer2' element={<PayPalStylePayment/>} />
-          <Route path='/topUp' element={<TopUpScreen />} />
-          <Route path='/qrCode' element={<QRCodeScannerPage />} />
-          <Route path='/create-njangi' element={<CreateAssociation/>} />
-        </Routes>
-      </BrowserRouter> */}
-    </AuthProvider>
->>>>>>> main
 
     </>
   )
