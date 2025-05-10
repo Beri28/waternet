@@ -39,7 +39,7 @@ function App() {
         {/* <HomeScreen/> */}
         <BrowserRouter>
           <Routes>
-            <Route path='/' element={<HomeScreen/>} />
+            <Route path='/' element={<LoginForm/>} />
             <Route path='/home' element={<HomeScreen/>} />
             {/* <Route path='/login' element={<Login />} /> */}
             {/* <Route path='/register' element={<Register />} /> */}
