@@ -1,5 +1,10 @@
 import React, { useState } from 'react';
 import { ArrowLeft } from 'lucide-react';
+import {  useNavigate } from 'react-router-dom';
+import { useToast } from '../../Context/toastContext';
+import { useAuth, User } from '../../Context/Auth-Context';
+import axios from 'axios';
+import { Header } from '../home_page/HomeScreen';
 
 const Button: React.FC<React.ButtonHTMLAttributes<HTMLButtonElement> & { className?: string }> = ({ className, children, ...props }) => {
     const baseClasses = "inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-slate-900 focus:ring-offset-2 disabled:opacity-50";
@@ -24,28 +29,48 @@ const Input: React.FC<React.InputHTMLAttributes<HTMLInputElement> & { className?
 };
 
 const TopUpScreen = () => {
-    const [amount, setAmount] = useState('');
+    const {user,updateUser}=useAuth()
+    const [amount, setAmount] = useState<number>(0);
     const [paymentMethod, setPaymentMethod] = useState('');
     const [mobileNumber, setMobileNumber] = useState('');
     const [transactionStatus, setTransactionStatus] = useState<'idle' | 'processing' | 'success' | 'error'>('idle');
-
+    const navigate=useNavigate()
+    const {showToast}=useToast()
     const handleTopUp = async () => {
         if (!amount || !paymentMethod || !mobileNumber) {
-            alert('Please enter amount, payment method, and mobile number.');
+            showToast(`Please fill all fields.`, { type: 'warning', theme: 'colored' })
             return;
         }
 
         setTransactionStatus('processing');
         try {
-            await new Promise(resolve => setTimeout(resolve, 2000));
-            setTransactionStatus('success');
-            setAmount('');
+            const config={
+                method:"POST",
+                url:'http://localhost:5000/api/v1/payment/top-up/personal',
+                data:{
+                  id:user?.personalAccount._id || "",
+                  phoneNumber:mobileNumber,
+                  amount
+                }
+            }
+            const res=await axios(config) 
+            console.log(res)
+            if(res.data){
+              console.log(res.data.data)
+              setTransactionStatus('success');
+              let tempUser={...user,personalAccount:res.data.message} as User
+              updateUser(tempUser)
+              console.log(user)
+            }
+            showToast("Account balance updated.", { type: 'success', theme: 'colored' })
+            setAmount(0);
             setPaymentMethod('');
             setMobileNumber('');
+            navigate(-1)
         } catch (error) {
+            console.log(error)
             setTransactionStatus('error');
-        } finally {
-            setTimeout(() => setTransactionStatus('idle'), 3000);
+            showToast("Could't update account balance.", { type: 'error', theme: 'colored' })
         }
     };
 
@@ -55,12 +80,13 @@ const TopUpScreen = () => {
     ];
 
     return (
-        <div className="min-h-screen bg-gray-50 flex flex-col">
+        <div className="min-h-screen bg-gray-50 flex flex-col p-6">
+            <Header />
             {/* Back Button */}
-            <div className="p-4">
+            <div className="pt-2">
                 <Button
                     className="flex items-center gap-2 bg-black text-white hover:bg-gray-800 px-4 py-2"
-                    onClick={() => alert('Navigating back...')}
+                    onClick={() => navigate(-1)}
                 >
                     <ArrowLeft className="h-4 w-4" />
                     <span>Back</span>
@@ -77,7 +103,7 @@ const TopUpScreen = () => {
                             id="amount"
                             type="number"
                             value={amount}
-                            onChange={(e) => setAmount(e.target.value)}
+                            onChange={(e) => setAmount(parseInt(e.target.value))}
                             placeholder="Enter amount"
                         />
                     </div>

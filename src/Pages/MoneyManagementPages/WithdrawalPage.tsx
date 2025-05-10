@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 
 interface MoneyTransferProps {}
 
-const MoneyTransferPage: React.FC<MoneyTransferProps> = () => {
+const WithdrawalPage: React.FC<MoneyTransferProps> = () => {
   const [amount, setAmount] = useState('');
   const [currency, setCurrency] = useState('FCFA'); // Default currency
 
@@ -77,4 +77,4 @@ const MoneyTransferPage: React.FC<MoneyTransferProps> = () => {
   );
 };
 
-export default MoneyTransferPage;
+export default WithdrawalPage;

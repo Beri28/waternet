@@ -1,27 +1,23 @@
-import React, { useContext, useState } from 'react';
+import { useState } from 'react';
 import { 
   FiBell, 
   FiUser, 
   FiSearch, 
   FiMenu,
-  FiSend,
   FiUsers,
   FiBriefcase,
   FiDollarSign,
   FiCreditCard,
   FiList,
-  FiDollarSign as FiDollar,
   FiSettings,
   FiPlus,
   FiMinus
 } from 'react-icons/fi';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../Context/Auth-Context';
-import { LogOut } from 'lucide-react';
+import { Home, LogIn, LogOut, QrCode } from 'lucide-react';
 
-const HomeScreen = () => {
-  const {user,logout}=useAuth()
-  // State for dropdown menu
+export const Header=()=>{
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [selectedOperation, setSelectedOperation] = useState('Menu');
   const operations = [
@@ -30,25 +26,16 @@ const HomeScreen = () => {
     'Transfer Funds',
     'Settings'
   ];
+  const {user,logout}=useAuth()
+  // State for dropdown menu
+  
   const navigate=useNavigate()
-
-  // Services with icons
-  const services = [
-    { name: 'Transfer Money', icon: <FiSend className="text-black text-2xl mb-2" /> },
-    { name: 'Associations/Njangis', icon: <FiUsers className="text-black text-2xl mb-2" /> },
-    { name: 'Businesses', icon: <FiBriefcase className="text-black text-2xl mb-2" /> },
-    { name: 'Take Loan', icon: <FiDollar className="text-black text-2xl mb-2" /> },
-  ];
   const handleLogout=()=>{
     logout()
     navigate('/login')
   }
-
   return (
-    <div className="min-h-screen bg-gray-50 p-6">
-
-      {/* Header Container */}
-      <div className="mb-8">
+    <div className="mb-8">
         {/* Top Bar with Menu, Search, and Icons */}
         <div className="flex items-center justify-between mb-4" >
           {/* Dropdown Menu - Left Side */}
@@ -63,6 +50,12 @@ const HomeScreen = () => {
             
             {isMenuOpen && (
               <div className="absolute z-10 mt-1 w-[300px] bg-white rounded-md shadow-lg border border-gray-200 py-1">
+                <button
+                    onClick={() => {navigate('/')}}
+                    className="flex items-center w-full text-left px-3 py-2 text-sm hover:bg-gray-100 transition-colors"
+                  >
+                    <Home className='w-4 h-4 mr-2' /> Home
+                  </button>
                 {operations.map((operation) => (
                   <button
                     key={operation}
@@ -80,13 +73,20 @@ const HomeScreen = () => {
                     {operation}
                   </button>
                 ))}
-                {user?.isAuthenticated&&
+                {user?.isAuthenticated?
                   <button
-                  onClick={() => {handleLogout()}}
-                  className="flex items-center w-full text-left px-3 py-2 text-sm hover:bg-gray-100 transition-colors"
-                >
-                  <LogOut className='w-4 h-4 mr-2' /> Logout
-                </button>
+                    onClick={() => {handleLogout()}}
+                    className="flex items-center w-full text-left px-3 py-2 text-sm hover:bg-gray-100 transition-colors"
+                  >
+                    <LogOut className='w-4 h-4 mr-2' /> Logout
+                  </button>
+                  :
+                  <button
+                    onClick={() => {navigate('/login')}}
+                    className="flex items-center w-full text-left px-3 py-2 text-sm hover:bg-gray-100 transition-colors"
+                  >
+                    <LogIn className='w-4 h-4 mr-2' /> Login
+                  </button>
                 }
               </div>
             )}
@@ -106,23 +106,45 @@ const HomeScreen = () => {
           <div className="flex gap-4 ml-4 items-center"> {/* Added marginLeft here */}
             <div className="relative">
               <FiBell className="text-gray-700 w-6 h-6 hover:text-blue-600 cursor-pointer" />
-              <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-4 w-4 flex items-center justify-center">
+              {/* <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-4 w-4 flex items-center justify-center">
                 3
-              </span>
+              </span> */}
             </div>
-            <div className="p-2 rounded-full hover:bg-gray-500 cursor-pointer bg-gray-300 border-black">
-                    {user?.username[0] || ""}{user?.username[1] || ""}
+            <div className="p-2 rounded-full hover:bg-gray-500 cursor-pointer bg-gray-300 border-black flex justify-center items-center gap-x-1">
+              <FiUser className="text-gray-700 w-5 h-5 hover:text-blue-600" /> {user?.username}
               {/* <FiUser className="text-gray-700 w-5 h-5 hover:text-blue-600" /> */}
             </div>
           </div>
         </div>
       </div>
+  )
+}
+
+const HomeScreen = () => {
+  const {user}=useAuth()
+  // State for dropdown menu
+  
+  // const navigate=useNavigate()
+
+  // Services with icons
+  const services = [
+    { name: 'See Personal Account Details', icon: <FiUser className="text-black text-2xl mb-2" />,link:'personalAccountDetails' },
+    { name: 'Associations/Njangi', icon: <FiUsers className="text-black text-2xl mb-2" />,link:'create-njangi' },
+    { name: 'Businesses', icon: <FiBriefcase className="text-black text-2xl mb-2" />,link:'businesses' },
+    { name: 'Make Payment', icon: <QrCode className="text-black text-2xl mb-2" />,link:'transfer' },
+  ];
+
+  return (
+    <div className="min-h-screen bg-gray-50 p-6">
+
+      {/* Header Container */}
+      <Header />
 
       {/* Rest of the components remain unchanged */}
       {/* Balance Card */}
       <div className="bg-black rounded-xl shadow-md p-6 mb-8">
-        <p className="text-white mb-2">Account Balance</p>
-        <p className="text-3xl font-bold text-white">{user?.personalAccount.balance} FCFA</p>
+        <p className="text-white mb-2 flex items-center">Account Balance</p>
+        <p className="text-3xl font-bold text-white">{user?.personalAccount && user?.personalAccount.balance} FCFA</p>
       </div>
 
       {/* Top up and withdrawal buttons with icons */}
@@ -144,7 +166,7 @@ const HomeScreen = () => {
       {/* Services Grid with Icons */}
       <div className="grid grid-cols-2 gap-4">
         {services.map((service,index) => (
-          <Link key={index} to="/transfer">
+          <Link key={index} to={"/"+service.link}>
             <div 
               key={service.name}
               className="bg-white p-5 rounded-xl shadow-sm hover:shadow-md transition-shadow flex flex-col items-center justify-center h-32 cursor-pointer"

@@ -1,4 +1,7 @@
 import React, { useState } from 'react';
+import { Header } from '../home_page/HomeScreen';
+import { ArrowLeft } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 const Button: React.FC<React.ButtonHTMLAttributes<HTMLButtonElement> & {
   className?: string;
@@ -56,36 +59,33 @@ const transactionTypes: TransactionType[] = [
   {
     value: 'mobile',
     label: 'Mobile money',
-    description: 'Send directly to a mobile wallet. Instant delivery.',
+    description: 'Send directly to a mobile wallet.',
   },
 ];
 
 const PayPalStylePayment = () => {
   const [selectedType, setSelectedType] = useState<TransactionType['value']>('goods');
-  const [proceed, setProceed] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
+  const proceed = false
+  const isLoading= false
+  const navigate=useNavigate()
 
   const handleTypeSelect = (type: TransactionType['value']) => {
     setSelectedType(type);
   };
 
-  const handleProceed = () => {
-    setIsLoading(true);
-    // Simulate API call or processing
-    setTimeout(() => {
-      setProceed(true);
-      setIsLoading(false);
-    }, 1500); // 1.5 second delay for demonstration
-  };
-
   return (
-    <div className="bg-gray-100 min-h-screen py-8">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        <h1 className="text-3xl font-semibold text-gray-900 mb-6 text-center">Send Money</h1>
+    <div className="bg-gray-100 min-h-screen  p-6">
+      <Header />
+      <div className="">
+        {/* <h1 className="text-3xl font-semibold text-gray-900 mb-6 text-start">Select payment type</h1> */}
 
-        <div className="bg-white shadow-md rounded-lg p-6 md:p-8 space-y-6">
+        <div className="bg-white shadow-md rounded-lg p-6 space-y-6">
+          <button className="flex items-center p-2 bg-white hover:bg-gray-100 rounded-sm shadow-sm text-gray-700" onClick={()=>navigate(-1)}>
+            <ArrowLeft className="mr-1" size={20} />
+            Back
+          </button>
           <div className="space-y-4">
-            <h2 className="text-lg font-semibold text-gray-900">Select payment type</h2>
+            <h2 className="text-xl font-semibold text-gray-900">Select payment type</h2>
             <p className="text-sm text-gray-500 mb-4">
               Choose how you want to send money. Fees may apply.
             </p>
@@ -133,7 +133,7 @@ const PayPalStylePayment = () => {
               You have selected: <span className="font-semibold">{transactionTypes.find(t => t.value === selectedType)?.label}</span>
             </p>
             <Button
-              onClick={handleProceed}
+              onClick={()=>{selectedType==='mobile'? navigate('/transfer2/mobile'):selectedType==='goods'?navigate('/transfer2/business'): navigate('/transfer2/other')}}
               isLoading={isLoading}
               className={cn(
                 "mt-6 px-8 py-3 rounded-full",

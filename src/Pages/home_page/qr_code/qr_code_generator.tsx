@@ -1,6 +1,7 @@
-import React, { useState, useRef } from 'react';
+import { useState, useRef } from 'react';
 import { QRCodeCanvas } from 'qrcode.react';
-import { FiDownload, FiX, FiSmartphone, FiCopy, FiEye, FiEyeOff } from 'react-icons/fi';
+import { FiDownload, FiX, FiCopy, FiEye, FiEyeOff } from 'react-icons/fi';
+import { QrCode } from 'lucide-react';
 
 // Simple encryption service (replace with proper crypto in production)
 const encryptNumber = (number: string, shift = 3): string => {
@@ -9,17 +10,17 @@ const encryptNumber = (number: string, shift = 3): string => {
   }).join('');
 };
 
-const decryptNumber = (encrypted: string, shift = 3): string => {
-  return encrypted.split('').map((char, index) => {
-    return String.fromCharCode(char.charCodeAt(0) - shift - (index % 3));
-  }).join('');
-};
+// const decryptNumber = (encrypted: string, shift = 3): string => {
+//   return encrypted.split('').map((char, index) => {
+//     return String.fromCharCode(char.charCodeAt(0) - shift - (index % 3));
+//   }).join('');
+// };
 
 const PhoneQRGenerator = () => {
   const [phoneNumber, setPhoneNumber] = useState('');
   const [qrValue, setQrValue] = useState('');
   const [showQr, setShowQr] = useState(false);
-  const [isCopied, setIsCopied] = useState(false);
+  // const [isCopied, setIsCopied] = useState(false);
   const [showEncrypted, setShowEncrypted] = useState(false);
   const qrRef = useRef<HTMLDivElement>(null);
 
@@ -83,7 +84,7 @@ const PhoneQRGenerator = () => {
 
     setQrValue(`tel:+${formattedNumber}`);
     setShowQr(true);
-    setIsCopied(false);
+    // setIsCopied(false);
     setShowEncrypted(false);
   };
 
@@ -109,8 +110,8 @@ const PhoneQRGenerator = () => {
     const formatted = `+${formatPhoneNumber(phoneNumber)}`;
     navigator.clipboard.writeText(formatted)
       .then(() => {
-        setIsCopied(true);
-        setTimeout(() => setIsCopied(false), 2000);
+        // setIsCopied(true);
+        // setTimeout(() => setIsCopied(false), 2000);
       })
       .catch(err => console.error('Copy failed:', err));
   };
@@ -123,8 +124,8 @@ const PhoneQRGenerator = () => {
     <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
       <div className="w-full max-w-md bg-white rounded-xl shadow-lg overflow-hidden p-6">
         <div className="flex items-center mb-6">
-          <FiSmartphone className="text-blue-600 text-2xl mr-3" />
-          <h1 className="text-2xl font-bold text-gray-800">Secure Phone QR Generator</h1>
+          <QrCode className="text-black text-2xl mr-3" />
+          <h1 className="text-2xl font-bold text-gray-800">Secure QR Code Generator</h1>
         </div>
 
         {/* Country Selection */}
@@ -179,7 +180,7 @@ const PhoneQRGenerator = () => {
           onClick={generateQrCode}
           disabled={!phoneNumber}
           className={`w-full py-3 px-4 rounded-md font-medium text-white mb-6 ${
-            phoneNumber ? 'bg-blue-600 hover:bg-blue-700' : 'bg-gray-400 cursor-not-allowed'
+            phoneNumber ? 'bg-black hover:bg-gray-500' : 'bg-gray-400 cursor-not-allowed'
           }`}
         >
           Generate Secure QR Code

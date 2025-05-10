@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
-import { myApicall } from '../../functions/apiCalls2';
 import { Loader, Phone } from 'lucide-react';
 import { useToast } from '../../Context/toastContext';
 import axios from 'axios';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth, User } from '../../Context/Auth-Context';
+import { baseUrl } from '../../App';
 
 interface LoginFormProps {}
 
@@ -36,9 +36,9 @@ const LoginForm: React.FC<LoginFormProps> = () => {
     try {
       const config={
           method:"POST",
-          url:'http://localhost:5000/api/v1/auth/login',
+          url:baseUrl +'/auth/login',
           data:{
-            email:'beri3@gmail.com',
+            phoneNumber:phone,
             password
           }
       }

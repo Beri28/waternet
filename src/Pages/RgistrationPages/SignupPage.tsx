@@ -4,6 +4,7 @@ import { useToast } from '../../Context/toastContext';
 import { Link, useNavigate } from 'react-router-dom';
 import { Loader, Phone } from 'lucide-react';
 import { useAuth, User } from '../../Context/Auth-Context';
+import { baseUrl } from '../../App';
 
 interface SignupFormProps {}
 
@@ -44,11 +45,11 @@ const SignupForm: React.FC<SignupFormProps> = () => {
     try {
       const config={
           method:"POST",
-          url:'http://localhost:5000/api/v1/auth/signup',
+          url:baseUrl + '/auth/signup',
           data:{
             username:firstName+lastName,
             password,
-            email:'beri3@gmail.com'
+            phoneNumber:phone
           }
       }
       const res=await axios(config) 
