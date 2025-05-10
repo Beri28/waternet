@@ -8,12 +8,38 @@ type AuthContextType = {
   isAuthenticated: boolean;
   loading: boolean;
 };
+type WithdrawalsMade = {
+  date:Date,
+  amount:number;
+  receiver:personalAccount;
+  phoneNumber:number,
+  withdrawalChannel:'mtn'|'orange',
+  status:'pending'|'success'|'failed'
+}
+type PaymentsMade = {
+  date:Date,
+  amount:number;
+  receiver?:personalAccount;
+  sender?:personalAccount;
+  paymentChannel:'mtn'|'orange',
+  status:'pending'|'success'|'failed'
+}
+type personalAccount ={
+  id:string
+  userId:string,
+  balance:number,
+  withdrawalsMade:WithdrawalsMade;
+  paymentsMade?:PaymentsMade;
+  paymentsReceived:PaymentsMade;
+}
 
 type User = {
   id: string;
-  name: string;
+  username: string;
   email: string;
   token: string;
+  personalAccount:personalAccount;
+  merchantAccount:personalAccount
 };
 
 // Create context with default values
@@ -26,7 +52,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   // Initialize auth state (e.g., check localStorage)
   useEffect(() => {
-    const storedUser = localStorage.getItem('user');
+    let storedUser = localStorage.getItem('njanbiz');
+    console.log(storedUser)
+    storedUser=JSON.stringify(storedUser)
     if (storedUser) {
       setUser(JSON.parse(storedUser));
     }
@@ -35,12 +63,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const login = (userData: User) => {
     setUser(userData);
-    localStorage.setItem('user', JSON.stringify(userData));
+    localStorage.setItem('njanbiz', JSON.stringify(userData));
   };
 
   const logout = () => {
     setUser(null);
-    localStorage.removeItem('user');
+    localStorage.removeItem('njanbiz');
   };
 
   const isAuthenticated = !!user;
