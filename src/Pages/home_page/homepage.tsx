@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+
+
 import { 
   FiBell, 
   FiUser, 
@@ -15,6 +17,7 @@ import {
   FiPlus,
   FiMinus
 } from 'react-icons/fi';
+import { Link } from 'react-router-dom';
 
 const HomeScreen = () => {
   
@@ -30,10 +33,10 @@ const HomeScreen = () => {
 
   // Services with icons
   const services = [
-    { name: 'Transfer Money', icon: <FiSend className="text-black text-2xl mb-2" /> },
-    { name: 'Create New Association/Njangi', icon: <FiUsers className="text-black text-2xl mb-2" /> },
-    { name: 'Create Business', icon: <FiBriefcase className="text-black text-2xl mb-2" /> },
-    { name: 'Take Loan', icon: <FiDollar className="text-black text-2xl mb-2" /> }
+    { name: 'Transfer Money', icon: <FiSend className="text-black text-2xl mb-2" />,link:'/tranfer' },
+    { name: 'Create New Association/Njangi', icon: <FiUsers className="text-black text-2xl mb-2" /> ,link:'/createNjangi'},
+    { name: 'Create Business', icon: <FiBriefcase className="text-black text-2xl mb-2" /> ,link:'/createBusiness' },
+    { name: 'Take Loan', icon: <FiDollar className="text-black text-2xl mb-2" /> ,link:'/loan'}
   ];
 
   return (
@@ -110,27 +113,33 @@ const HomeScreen = () => {
       </div>
 
       {/* Top up and withdrawal buttons with icons */}
-      <div className="flex justify-between mb-8 gap-4">
-        <button className="flex items-center justify-center gap-2 bg-black hover:bg-gray-800 text-white py-3 px-6 rounded-lg flex-1 text-center font-medium transition-colors">
-          <FiPlus className="text-white" />
-          Top up
-        </button>
-        <button className="flex items-center justify-center gap-2 bg-black hover:bg-gray-800 text-white py-3 px-6 rounded-lg flex-1 text-center font-medium transition-colors">
-          <FiMinus className="text-white" />
-          Withdraw
-        </button>
+      <div className="flex w-full mb-8 gap-4">
+        <Link to="/topUp" className='w-1/2'>
+          <button className="flex items-center justify-center gap-2 bg-black hover:bg-gray-800 text-white py-3 px-6 rounded-lg flex-1 text-center font-medium transition-colors w-full">
+            <FiPlus className="text-white" />
+            Top up
+          </button>
+        </Link>
+        <Link to="/withdraw" className='w-1/2'>
+          <button className="flex items-center justify-center gap-2 bg-black hover:bg-gray-800 text-white py-3 px-6 rounded-lg flex-1 text-center font-medium transition-colors w-full">
+            <FiMinus className="text-white" />
+            Withdraw
+          </button>
+        </Link>
       </div>
 
       {/* Services Grid with Icons */}
       <div className="grid grid-cols-2 gap-4">
         {services.map((service) => (
-          <div 
-            key={service.name}
-            className="bg-white p-5 rounded-xl shadow-sm hover:shadow-md transition-shadow flex flex-col items-center justify-center h-32 cursor-pointer"
-          >
-            {service.icon}
-            <p className="text-gray-700 text-center font-medium mt-2">{service.name}</p>
-          </div>
+          <Link to="/transfer">
+            <div 
+              key={service.name}
+              className="bg-white p-5 rounded-xl shadow-sm hover:shadow-md transition-shadow flex flex-col items-center justify-center h-32 cursor-pointer"
+            >
+              {service.icon}
+              <p className="text-gray-700 text-center font-medium mt-2">{service.name}</p>
+            </div>
+          </Link>
         ))}
       </div>
 
