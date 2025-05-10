@@ -129,7 +129,7 @@ const HomeScreen = () => {
   // Services with icons
   const services = [
     { name: 'See Personal Account Details', icon: <FiUser className="text-black text-2xl mb-2" />,link:'personalAccountDetails' },
-    { name: 'Associations/Njangi', icon: <FiUsers className="text-black text-2xl mb-2" />,link:'create-njangi' },
+    { name: 'Associations/Njangi', icon: <FiUsers className="text-black text-2xl mb-2" />,link:'njangi' },
     { name: 'Businesses', icon: <FiBriefcase className="text-black text-2xl mb-2" />,link:'businesses' },
     { name: 'Make Payment', icon: <QrCode className="text-black text-2xl mb-2" />,link:'transfer' },
   ];

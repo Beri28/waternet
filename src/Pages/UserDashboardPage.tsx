@@ -56,7 +56,7 @@ const UserDashboardPage = () => {
       {/* Header */}
       <header className="bg-white shadow-sm">
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
-          <Link to="/">
+          <Link to="/home">
             <button className="flex items-center text-gray-700">
               <ArrowLeft className="mr-2" size={20} />
               Back
