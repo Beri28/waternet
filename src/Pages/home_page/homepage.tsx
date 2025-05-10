@@ -33,7 +33,7 @@ const HomeScreen = () => {
 
   // Services with icons
   const services = [
-    { name: 'Transfer Money', icon: <FiSend className="text-black text-2xl mb-2" /> },
+    { name: 'See Personal Account Details', icon: <FiUser className="text-black text-2xl mb-2" /> },
     { name: 'Associations/Njangis', icon: <FiUsers className="text-black text-2xl mb-2" /> },
     { name: 'Businesses', icon: <FiBriefcase className="text-black text-2xl mb-2" /> },
     { name: 'Take Loan', icon: <FiDollar className="text-black text-2xl mb-2" /> },
@@ -130,7 +130,7 @@ const HomeScreen = () => {
       {/* Services Grid with Icons */}
       <div className="grid grid-cols-2 gap-4">
         {services.map((service) => (
-          <Link to="/transfer">
+          <Link to="/personalAccountDetails">
             <div 
               key={service.name}
               className="bg-white p-5 rounded-xl shadow-sm hover:shadow-md transition-shadow flex flex-col items-center justify-center h-32 cursor-pointer"
