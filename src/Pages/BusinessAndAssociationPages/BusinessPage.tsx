@@ -35,13 +35,13 @@ const UserBusinessesScreen = () => {
 
   return (
     <div className="p-4 sm:p-6 lg:p-8">
-      {/* Centered Search Bar with Add Button */}
-      <div className="flex flex-col items-center mb-8">
-        <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-6">My Businesses</h1>
+      {/* Horizontal Header with Search and Add Button */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
+        <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">My Businesses</h1>
 
-        <div className="flex flex-col sm:flex-row items-center gap-3 w-full max-w-2xl mx-auto">
+        <div className="flex flex-col sm:flex-row items-center gap-3 w-full sm:w-auto">
           {/* Search Input */}
-          <div className="relative w-full">
+          <div className="relative w-full sm:w-64">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
             <input
               ref={searchInputRef}
@@ -56,7 +56,7 @@ const UserBusinessesScreen = () => {
           {/* Add Button */}
           <button
             onClick={handleAddBusiness}
-            className="flex items-center justify-center gap-2 whitespace-nowrap px-4 sm:px-6 py-2 h-12 rounded-lg bg-black hover:bg-gray-800 text-white transition-colors duration-200 shadow-sm"
+            className="flex items-center justify-center gap-2 whitespace-nowrap w-full sm:w-auto px-4 sm:px-6 py-2 h-12 rounded-lg bg-black hover:bg-gray-800 text-white transition-colors duration-200 shadow-sm"
           >
             <Plus className="w-4 h-4" />
             <span>Add Business</span>
@@ -107,4 +107,3 @@ const UserBusinessesScreen = () => {
 };
 
 export default UserBusinessesScreen;
-
