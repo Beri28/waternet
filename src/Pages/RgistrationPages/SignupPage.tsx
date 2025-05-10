@@ -1,13 +1,22 @@
+import axios from 'axios';
 import React, { useState } from 'react';
+import { useToast } from '../../Context/toastContext';
+import { Link, useNavigate } from 'react-router-dom';
+import { Loader, Phone } from 'lucide-react';
+import { useAuth, User } from '../../Context/Auth-Context';
 
 interface SignupFormProps {}
 
 const SignupForm: React.FC<SignupFormProps> = () => {
+  const {login,user}=useAuth()
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [phone, setPhone] = useState('');
   const [password, setPassword] = useState('');
   const [passwordVisible, setPasswordVisible] = useState(false);
+  const [loading,setLoading]=useState<boolean>(false)
+  const { showToast }=useToast()
+  const navigate=useNavigate()
 
   const handleFirstNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setFirstName(event.target.value);
@@ -29,9 +38,39 @@ const SignupForm: React.FC<SignupFormProps> = () => {
     setPasswordVisible(!passwordVisible);
   };
 
-  const handleSubmit = (event: React.FormEvent) => {
+  const handleSubmit =async (event: React.FormEvent) => {
     event.preventDefault();
-    console.log('Signup submitted:', { firstName, lastName, phone, password });
+    setLoading(true)
+    try {
+      const config={
+          method:"POST",
+          url:'http://localhost:5000/api/v1/auth/signup',
+          data:{
+            username:firstName+lastName,
+            password,
+            email:'beri3@gmail.com'
+          }
+      }
+      const res=await axios(config) 
+      if(res.data){
+        console.log(res.data.data)
+        let tempUser={...res.data.data.user,token:res.data.data.token,isAuthenticated: true} as User
+        login(tempUser)
+        console.log(user)
+        // return res
+      }
+      // const res=await myApicall('http://localhost:5000/api/v1/auth/login','POST')
+      console.log(res)
+      showToast("User account created.", { type: 'success', theme: 'colored' })
+      setLoading(false)
+      navigate('/home')
+    } catch (error:any) {
+      console.log(error.response.data.message)
+      showToast(` User not created`, { type: 'error', theme: 'colored' })
+      showToast(` ${error.response.data.message}`, { type: 'error', theme: 'colored' })
+      setLoading(false)
+    }
+    // console.log('Login submitted:', { phone, password });
   };
 
   return (
@@ -39,7 +78,7 @@ const SignupForm: React.FC<SignupFormProps> = () => {
       <div className="bg-white p-8 rounded-lg shadow-md w-96">
         <div className="flex flex-col items-center mb-6">
           <div className="flex items-center">
-            <svg
+            {/* <svg
               xmlns="http://www.w3.org/2000/svg"
               className="h-8 w-8 mr-2 text-gray-700"
               fill="none"
@@ -52,7 +91,7 @@ const SignupForm: React.FC<SignupFormProps> = () => {
                 strokeWidth={2}
                 d="M8 9l3 3-3 3m5 0h3M5 20h14c.552 0 1-.448 1-1V5c0-.552-.448-1-1-1H5c-.552 0-1 .448-1 1v14c0 .552.448 1 1 1z"
               />
-            </svg>
+            </svg> */}
             <h2 className="text-2xl font-semibold text-gray-800">NjangBiz</h2>
           </div>
           <p className="text-sm text-gray-600 mt-1">Sign up to continue</p>
@@ -85,7 +124,7 @@ const SignupForm: React.FC<SignupFormProps> = () => {
           <div>
             <div className="relative">
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <svg
+                {/* <svg
                   className="h-5 w-5 text-gray-500"
                   xmlns="http://www.w3.org/2000/svg"
                   viewBox="0 0 20 20"
@@ -94,10 +133,11 @@ const SignupForm: React.FC<SignupFormProps> = () => {
                 >
                   <path d="M3 4a1 1 0 011-1h12a1 1 0 011 1v12a1 1 0 01-1 1H4a1 1 0 01-1-1V4z" />
                   <path d="M10 12a2 2 0 100-4 2 2 0 000 4z" />
-                </svg>
+                </svg> */}
+                <Phone className='h-5 w-5 text-gray-500' />
               </div>
               <input
-                type="text"
+                type="number"
                 className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                 placeholder="Phone number"
                 value={phone}
@@ -154,18 +194,23 @@ const SignupForm: React.FC<SignupFormProps> = () => {
             </div>
           </div>
 
-          <div>
+          <div className='flex justify-center'>
+          {!loading? 
             <button
               type="submit"
               className="w-full py-2 px-4 bg-gray-900 text-white rounded-md hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"
+              onClick={()=>handleSubmit}
             >
               Sign up
             </button>
+            :
+            <Loader />
+            }
           </div>
         </form>
 
         <p className="mt-4 text-center text-sm text-gray-600">
-          Already have an account? <a href="#" className="font-semibold text-indigo-600 hover:text-indigo-500">Login</a>
+          Already have an account? <Link to="/login" className="font-semibold text-indigo-600 hover:text-indigo-500">Signup</Link>
         </p>
       </div>
     </div>

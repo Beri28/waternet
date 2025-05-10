@@ -5,7 +5,6 @@ type AuthContextType = {
   user: User | null;
   login: (userData: User) => void;
   logout: () => void;
-  isAuthenticated: boolean;
   loading: boolean;
 };
 type WithdrawalsMade = {
@@ -33,10 +32,11 @@ type personalAccount ={
   paymentsReceived:PaymentsMade;
 }
 
-type User = {
+export type User = {
   id: string;
   username: string;
   email: string;
+  isAuthenticated: boolean;
   token: string;
   personalAccount:personalAccount;
   merchantAccount:personalAccount
@@ -50,6 +50,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
 
+  
   // Initialize auth state (e.g., check localStorage)
   useEffect(() => {
     let storedUser = localStorage.getItem('njanbiz');
@@ -62,6 +63,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   }, []);
 
   const login = (userData: User) => {
+    console.log(userData)
     setUser(userData);
     localStorage.setItem('njanbiz', JSON.stringify(userData));
   };
@@ -74,7 +76,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const isAuthenticated = !!user;
 
   return (
-    <AuthContext.Provider value={{ user, login, logout, isAuthenticated, loading }}>
+    <AuthContext.Provider value={{ user, login, logout, loading }}>
       {children}
     </AuthContext.Provider>
   );
