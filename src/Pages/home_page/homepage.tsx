@@ -6,7 +6,6 @@ import {
   FiUser, 
   FiSearch, 
   FiMenu,
-  FiSend,
   FiUsers,
   FiBriefcase,
   FiDollarSign,

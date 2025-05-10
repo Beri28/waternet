@@ -81,6 +81,7 @@ const UserDashboardPage = () => {
               </div>
               <span className="text-xs font-medium">Receive</span>
             </button>
+
             <button 
               onClick={() => setShowWithdrawModal(true)}
               className="flex flex-col items-center justify-center p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors"
@@ -90,12 +91,15 @@ const UserDashboardPage = () => {
               </div>
               <span className="text-xs font-medium">Send</span>
             </button>
+
+
             <button className="flex flex-col items-center justify-center p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
               <div className="bg-purple-100 p-2 rounded-full text-purple-600 mb-2">
                 <Share2 size={18} />
               </div>
               <span className="text-xs font-medium">Pay</span>
             </button>
+ 
             <button className="flex flex-col items-center justify-center p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
               <div className="bg-yellow-100 p-2 rounded-full text-yellow-600 mb-2">
                 <Download size={18} />
