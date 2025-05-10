@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 
 interface MoneyTransferProps {}
 
@@ -141,12 +142,14 @@ const MoneyTransferPageWithQR: React.FC<MoneyTransferProps> = () => {
               Send Money
             </button>
             :
-            <button
-              type="submit"
-              className="bg-black text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline hover:bg-gray-800 w-full"
-            >
-              Continue To Scan QR Code
-            </button>
+            <Link to="/qrCode">
+              <button
+                type="submit"
+                className="bg-black text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline hover:bg-gray-800 w-full"
+              >
+                Continue To Scan QR Code
+              </button>
+            </Link>
             }
           </form>
         </div>
