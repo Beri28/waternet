@@ -31,8 +31,8 @@ const HomeScreen = () => {
   // Services with icons
   const services = [
     { name: 'Transfer Money', icon: <FiSend className="text-black text-2xl mb-2" /> },
-    { name: 'Create New Association/Njangi', icon: <FiUsers className="text-black text-2xl mb-2" /> },
-    { name: 'Create Business', icon: <FiBriefcase className="text-black text-2xl mb-2" /> },
+    { name: 'Associations/Njangis', icon: <FiUsers className="text-black text-2xl mb-2" /> },
+    { name: 'Businesses', icon: <FiBriefcase className="text-black text-2xl mb-2" /> },
     { name: 'Take Loan', icon: <FiDollar className="text-black text-2xl mb-2" /> }
   ];
 
@@ -42,10 +42,9 @@ const HomeScreen = () => {
       {/* Header Container */}
       <div className="mb-8">
         {/* Top Bar with Menu, Search, and Icons */}
-        <div className="flex items-center justify-between mb-4"> {/* Changed to justify-between */}
-
+        <div className="flex items-center justify-between mb-4" >
           {/* Dropdown Menu - Left Side */}
-          <div className="relative">
+          <div className="relative mr-4"> {/* Added marginRight here */}
             <button 
               onClick={() => setIsMenuOpen(!isMenuOpen)}
               className="flex items-center bg-white py-2 px-3 rounded-lg border border-gray-300 hover:bg-gray-100 transition-colors"
@@ -78,7 +77,7 @@ const HomeScreen = () => {
           </div>
           
           {/* Search Bar - Moved to center */}
-          <div className="relative flex-1 mx-3 max-w-md">
+          <div className="relative flex-1 max-w-md">
             <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
             <input
               type="text"
@@ -88,7 +87,7 @@ const HomeScreen = () => {
           </div>
           
           {/* Icons - Right Side - Now fully right-aligned */}
-          <div className="flex gap-4 ml-auto"> {/* Added ml-auto */}
+          <div className="flex gap-4 ml-4"> {/* Added marginLeft here */}
             <div className="relative">
               <FiBell className="text-gray-700 w-6 h-6 hover:text-blue-600 cursor-pointer" />
               <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-4 w-4 flex items-center justify-center">
