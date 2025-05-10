@@ -18,6 +18,8 @@ import UserDashboardPage from './Pages/UserDashboardPage';
 import LoginForm from './Pages/RgistrationPages/LoginPage';
 import CreateAssociation from './Pages/create_association/associations';
 import { AuthProvider } from './Context/Auth-Context';
+import UserAssociationScreen from './Pages/BusinessAndAssociationPages/AssociationPage';
+import AssociationPage from './Pages/BusinessAndAssociationPages/AssociationDetailsPage';
 // import PhoneQRGenerator from './Pages/home_page/qr_code/qr_code_generator';
 
 // import Home from './pages/home/Home'
@@ -29,8 +31,8 @@ function App() {
     <>
     <AuthProvider>
       {/* <PayPalStylePayment/> */}
-      {/* <PhoneQRGenerator/> */}
-      <BrowserRouter>
+      <AssociationPage/>
+      {/* <BrowserRouter>
         <Routes>
           <Route path='/' element={<HomeScreen/>} />
           <Route path='/login' element={<LoginForm />} />
@@ -42,7 +44,7 @@ function App() {
           <Route path='/qrCode' element={<QRCodeScannerPage />} />
           <Route path='/create-njangi' element={<CreateAssociation/>} />
         </Routes>
-      </BrowserRouter>
+      </BrowserRouter> */}
     </AuthProvider>
 
     </>
