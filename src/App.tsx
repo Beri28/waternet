@@ -15,7 +15,7 @@ import LoginForm from './pages/RgistrationPages/LoginPage';
 import { ToastProvider } from './Context/toastContext';
 import AuthProvider from './Context/Auth-Context';
 import UserAssociationScreen from './pages/BusinessAndAssociationPages/AssociationPage';
-export const baseUrl=''
+export const baseUrl='/api/v1'
 // import Home from './pages/home/Home'
 
 function App() {
