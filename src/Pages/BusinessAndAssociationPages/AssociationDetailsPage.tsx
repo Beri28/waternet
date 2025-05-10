@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import  { useState } from 'react';
 import { 
-  UserPlus, Users, Coins, Calendar, Award, User, Check, 
-  Clock, RotateCw, ArrowLeft, X, ChevronDown 
+  UserPlus, Coins, Award, User, Check, 
+  Clock, RotateCw, ArrowLeft, ChevronDown 
 } from 'lucide-react';
 
 type IntervalType = 'Weekly' | 'Bi-weekly' | 'Monthly' | 'Quarterly';
@@ -89,7 +89,7 @@ const AssociationManagement = () => {
   const [nextContributionDate] = useState('06/01/2025');
   
   // Calculate totals
-  const totalExpected = members.reduce((sum, m) => sum + (m.contributionAmount * m.positions), 0);
+  // const totalExpected = members.reduce((sum, m) => sum + (m.contributionAmount * m.positions), 0);
   const totalPositions = members.reduce((sum, m) => sum + m.positions, 0);
   const paidAmount = members.filter(m => m.status === 'paid').reduce((sum, m) => sum + m.contributionAmount, 0);
   const pendingAmount = members.filter(m => m.status === 'pending').reduce((sum, m) => sum + m.contributionAmount, 0);

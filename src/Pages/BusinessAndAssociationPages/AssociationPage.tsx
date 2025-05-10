@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { Plus, Search, Store } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -10,13 +10,13 @@ interface Association {
 
 const UserAssociationScreen = () => {
   const [searchQuery, setSearchQuery] = useState('');
-  const [association, setAssociation] = useState<Association[]>([
+  const association:Association[]=[
     { id: '1', name: 'Tech Innovators Ltd', description: 'Software development and IT solutions' },
     { id: '2', name: 'Global Foods Co', description: 'Import and export of food products' },
     { id: '3', name: 'Fashion Hub', description: 'Retailer of trendy clothing and accessories' },
     { id: '4', name: 'Green Energy Solutions', description: 'Provider of sustainable energy solutions' },
     { id: '5', name: 'Creative Designs Studio', description: 'Graphic design and marketing services' },
-  ]);
+  ];
   const searchInputRef = useRef<HTMLInputElement>(null);
 
   const filteredAssociation = association.filter(association =>
