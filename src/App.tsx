@@ -1,23 +1,19 @@
 import './App.css'
-import WithdrawalPage from './pages/MoneyManagementPages/WithdrawalPage'
-import PayPalStylePayment from './pages/MoneyManagementPages/PayPalStylePayment';
-import PhoneQRGenerator from './pages/home_page/qr_code/qr_code_generator';
-import HomeScreen from './pages/home_page/HomeScreen';
-import TopUpScreen from './pages/MoneyManagementPages/TopUpAccountPage';
-import SignupForm from './pages/RgistrationPages/SignupPage';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
-import MoneyTransferPageWithQR from './pages/MoneyManagementPages/TransferMoney';
-import QRCodeScannerPage from './pages/MoneyManagementPages/QRCodePage';
-import UserBusinessesScreen from './pages/BusinessAndAssociationPages/BusinessPage';
-import UserDashboardPage from './pages/UserDashboardPage';
-import CreateAssociation from './pages/create_association/associations';
-import LoginForm from './pages/RgistrationPages/LoginPage';
+import LoginForm from './pages/AuthPages/LoginPage';
 import { ToastProvider } from './Context/toastContext';
 import AuthProvider from './Context/Auth-Context';
-import UserAssociationScreen from './pages/BusinessAndAssociationPages/AssociationPage';
+import WaterManagementDashboard from './pages/DashboardOne';
+import AppContent from './pages/DashboardThree';
+// import Dashboard from './pages/DashboardThree';
 export const baseUrl='/api/v1'
 // import Home from './pages/home/Home'
+import App2 from "./pages/App2";
+import LandingPage from './pages/LandingPage';
+import Citizen from './pages/citizen';
+import FieldWorker from './pages/fieldWorker';
 
+// good bg - bg-[#CAF0F8]
 function App() {
 
   return (
@@ -34,28 +30,21 @@ function App() {
         }}
     >
       <AuthProvider>
-        {/* <PayPalStylePayment/> */}
-        {/* <PhoneQRGenerator/> */}
-        {/* <HomeScreen/> */}
         <BrowserRouter>
           <Routes>
-            <Route path='/' element={<LoginForm/>} />
-            <Route path='/home' element={<HomeScreen/>} />
+            <Route path='/' element={<LandingPage onLoginClick={() => window.location.href = '/login'} />} />
+            <Route path='/h' element={<WaterManagementDashboard />} />
+            <Route path='/home' element={<AppContent />} />
+            <Route path='/home2' element={<App2 />} />
+            <Route path='/citizen' element={<Citizen />} />
+            <Route path='/worker' element={<FieldWorker />} />
             {/* <Route path='/login' element={<Login />} /> */}
             {/* <Route path='/register' element={<Register />} /> */}
-            <Route path='/transfer2/:type' element={<MoneyTransferPageWithQR />} />
-            <Route path='/personalAccountDetails' element={<UserDashboardPage />} />
-            <Route path='/withdraw' element={<WithdrawalPage />} />
-            <Route path='/transfer' element={<PayPalStylePayment/>} />
-            <Route path='/topUp' element={<TopUpScreen />} />
-            <Route path='/qrCode' element={<QRCodeScannerPage />} />
-            <Route path='/qrCodeScanner' element={<QRCodeScannerPage />} />
-            <Route path='/qrCode2' element={<PhoneQRGenerator />} />
             <Route path='/login' element={<LoginForm />} />
-            <Route path='/register' element={<SignupForm />} />
-            <Route path='/businesses' element={<UserBusinessesScreen />} />
-            <Route path='/create-njangi' element={<CreateAssociation/>} />
-            <Route path='/njangi' element={<UserAssociationScreen />} />
+            {/* <Route path="/upload" element={<UploadData />} />
+            <Route path="/reports" element={<Reports />} />
+            <Route path="/citizen-report" element={<CitizenReport />} />
+            <Route path="/admin" element={<AdminPanel />} /> */}
           </Routes>
         </BrowserRouter>
       </AuthProvider>

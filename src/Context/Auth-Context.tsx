@@ -2,88 +2,66 @@ import { createContext, useContext, useState, useEffect, ReactNode } from 'react
 
 // Define types for auth context
 type AuthContextType = {
-  user: User | null;
-  login: (userData: User) => void;
-  updateUser: (userData: User) => void;
-  logout: () => void;
-  loading: boolean;
-};
-type WithdrawalsMade = {
-  date:Date,
-  amount:number;
-  receiver:personalAccount;
-  phoneNumber:number,
-  withdrawalChannel:'mtn'|'orange',
-  status:'pending'|'success'|'failed'
-}
-type PaymentsMade = {
-  date:Date,
-  amount:number;
-  receiver?:personalAccount;
-  sender?:personalAccount;
-  paymentChannel:'mtn'|'orange',
-  status:'pending'|'success'|'failed'
-}
-type personalAccount ={
-  _id:string
-  userId:string,
-  balance:number,
-  withdrawalsMade:WithdrawalsMade;
-  paymentsMade?:PaymentsMade;
-  paymentsReceived:PaymentsMade;
-}
-
-export type User = {
-  id: string;
-  username: string;
-  phoneNumber: number;
   isAuthenticated: boolean;
-  token: string;
-  personalAccount:personalAccount;
-  merchantAccount:personalAccount
+  userRole: 'guest' | 'field_officer' | 'planner' | 'ngo';
+  login: (role: 'field_officer' | 'planner' | 'ngo') => void;
+  logout: () => void;
+  // user: User | null;
+  // login: (userData: User) => void;
+  // updateUser: (userData: User) => void;
+  // logout: () => void;
+  // loading: boolean;
 };
+
+// export type User = {
+//   id: string;
+//   username: string;
+//   phoneNumber: number;
+//   isAuthenticated: boolean;
+//   token: string;
+//   personalAccount:personalAccount;
+//   merchantAccount:personalAccount
+// };
 
 // Create context with default values
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 // Auth Provider Component
 const AuthProvider = ({ children }: { children: ReactNode }) => {
-  const [user, setUser] = useState<User | null>(null);
-  const [loading, setLoading] = useState(true);
-
+    const [isAuthenticated, setIsAuthenticated] = useState(false);
+    const [userRole, setUserRole] = useState<'guest' | 'field_officer' | 'planner' | 'ngo'>('planner');
   
-  // Initialize auth state (e.g., check localStorage)
-  useEffect(() => {
-    let storedUser = localStorage.getItem('njanbiz');
-    console.log(storedUser)
-    // storedUser=JSON.parse(storedUser || "")
-    // console.log(storedUser)
-    if (storedUser) {
-      setUser(JSON.parse(storedUser));
-    }
-    setLoading(false);
-  }, []);
-
-  const login = (userData: User) => {
-    console.log(userData)
-    setUser(userData);
-    localStorage.setItem('njanbiz', JSON.stringify(userData));
-  };
-  const updateUser = (userData: User) => {
-    console.log(userData)
-    setUser(userData);
-    localStorage.setItem('njanbiz', JSON.stringify(userData));
-  };
-
-  const logout = () => {
-    setUser(null);
-    localStorage.removeItem('njanbiz');
-  };
+    const login = (role: 'field_officer' | 'planner' | 'ngo') => {
+      setIsAuthenticated(true);
+      setUserRole(role);
+      // In a real app, this would involve API calls, token storage etc.
+      // Simulating localStorage for persistence
+      localStorage.setItem('userRole', role);
+      localStorage.setItem('isAuthenticated', 'true');
+    };
+  
+    const logout = () => {
+      setIsAuthenticated(false);
+      setUserRole('guest');
+      // In a real app, this would clear tokens etc.
+      localStorage.removeItem('userRole');
+      localStorage.removeItem('isAuthenticated');
+    };
+  
+    useEffect(() => {
+      // Check local storage on mount for simulated persistence
+      const storedRole = localStorage.getItem('userRole') as 'field_officer' | 'planner' | 'ngo' | null;
+      const storedAuth = localStorage.getItem('isAuthenticated') === 'true';
+      if (storedAuth && storedRole) {
+        setIsAuthenticated(true);
+        setUserRole(storedRole);
+      }
+    }, []);
 
   // const isAuthenticated = !!user;
 
   return (
-    <AuthContext.Provider value={{ user, login, logout,updateUser, loading }}>
+    <AuthContext.Provider value={{ isAuthenticated, userRole, login, logout }}>
       {children}
     </AuthContext.Provider>
   );
