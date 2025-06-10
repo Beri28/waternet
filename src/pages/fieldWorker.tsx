@@ -1,4 +1,8 @@
 import React, { useState, useEffect, createContext, useContext } from 'react';
+import OcrReader from './components/OcrReader';
+import { Droplets } from 'lucide-react';
+import ReportPreview from './components/ReportPreview';
+import {Box, FormControlLabel, Radio, RadioGroup } from '@mui/material';
 
 // --- Global Tailwind CSS (usually in index.css or main.css) ---
 // This would typically be imported from a CSS file. For this self-contained immersive,
@@ -33,20 +37,20 @@ const UploadCloudIcon:React.FC<React.SVGProps<SVGSVGElement>> = () => (
     <polyline points="16 16 12 12 8 16"></polyline>
   </svg>
 );
-const ListChecksIcon = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M16 11V7l-4 4L8 7v4"></path>
-    <path d="M16 17V13l-4 4L8 13v4"></path>
-    <path d="M22 11V3H2v8"></path>
-    <path d="M22 21v-8H2v8"></path>
-  </svg>
-);
-const CheckCircle2Icon = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"></path>
-    <path d="M9 12l2 2l4-4"></path>
-  </svg>
-);
+// const ListChecksIcon = () => (
+//   <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+//     <path d="M16 11V7l-4 4L8 7v4"></path>
+//     <path d="M16 17V13l-4 4L8 13v4"></path>
+//     <path d="M22 11V3H2v8"></path>
+//     <path d="M22 21v-8H2v8"></path>
+//   </svg>
+// );
+// const CheckCircle2Icon = () => (
+//   <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+//     <path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"></path>
+//     <path d="M9 12l2 2l4-4"></path>
+//   </svg>
+// );
 const PackageIcon:React.FC<React.SVGProps<SVGSVGElement>> = () => (
   <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     <path d="M12 22h6a2 2 0 0 0 2-2V7l-5-5H6a2 2 0 0 0-2 2v3"></path>
@@ -56,14 +60,14 @@ const PackageIcon:React.FC<React.SVGProps<SVGSVGElement>> = () => (
     <path d="M15 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
   </svg>
 );
-const FlaskConicalIcon:React.FC<React.SVGProps<SVGSVGElement>> = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M14.4 20A7 7 0 0 1 5 17.5V11h14.4v6.5A7 7 0 0 1 9.6 20"></path>
-    <path d="M22 14H2"></path>
-    <path d="M17 19.5L12 22l-5-2.5"></path>
-    <path d="M12 2v9"></path>
-  </svg>
-);
+// const FlaskConicalIcon:React.FC<React.SVGProps<SVGSVGElement>> = () => (
+//   <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+//     <path d="M14.4 20A7 7 0 0 1 5 17.5V11h14.4v6.5A7 7 0 0 1 9.6 20"></path>
+//     <path d="M22 14H2"></path>
+//     <path d="M17 19.5L12 22l-5-2.5"></path>
+//     <path d="M12 2v9"></path>
+//   </svg>
+// );
 const AlertTriangleIcon:React.FC<React.SVGProps<SVGSVGElement>> = () => (
   <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
@@ -73,12 +77,12 @@ const AlertTriangleIcon:React.FC<React.SVGProps<SVGSVGElement>> = () => (
 );
 
 // Custom Water Droplet Logo SVG (reused from landing page)
-const WaterDropletLogo:React.FC<React.SVGProps<SVGSVGElement>> = () => (
-  <svg width="30" height="30" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <path d="M12 2.69L11.83 2C8.68 2.36 6 4.81 6 8.5S12 22 12 22s6-13.5 6-17.5S15.32 2.36 12.17 2L12 2.69z" fill="currentColor" opacity="0.8"/>
-    <path d="M10 5.69L9.83 5C7.68 5.36 6 7.81 6 10.5S10 20 10 20s4-9 4-12S12.32 5.36 10.17 5L10 5.69z" fill="currentColor" opacity="0.6"/>
-  </svg>
-);
+// const WaterDropletLogo:React.FC<React.SVGProps<SVGSVGElement>> = () => (
+//   <svg width="30" height="30" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+//     <path d="M12 2.69L11.83 2C8.68 2.36 6 4.81 6 8.5S12 22 12 22s6-13.5 6-17.5S15.32 2.36 12.17 2L12 2.69z" fill="currentColor" opacity="0.8"/>
+//     <path d="M10 5.69L9.83 5C7.68 5.36 6 7.81 6 10.5S10 20 10 20s4-9 4-12S12.32 5.36 10.17 5L10 5.69z" fill="currentColor" opacity="0.6"/>
+//   </svg>
+// );
 
 // --- Utility Functions (reused) ---
 const formatDate = (dateString: string | Date) => {
@@ -90,14 +94,14 @@ const formatDate = (dateString: string | Date) => {
   });
 };
 
-const formatCurrency = (amount: number, currency = 'XAF') => {
-  return new Intl.NumberFormat('en-CM', {
-    style: 'currency',
-    currency: currency,
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 0,
-  }).format(amount);
-};
+// const formatCurrency = (amount: number, currency = 'XAF') => {
+//   return new Intl.NumberFormat('en-CM', {
+//     style: 'currency',
+//     currency: currency,
+//     minimumFractionDigits: 0,
+//     maximumFractionDigits: 0,
+//   }).format(amount);
+// };
 
 // --- Context for User Authentication and Global State (Mock) ---
 interface AuthContextType {
@@ -792,7 +796,7 @@ const FieldOfficerLayout: React.FC<FieldOfficerLayoutProps> = ({
     { name: 'Bulk Readings', icon: <UploadCloudIcon />, page: 'bulk-meter-reading' },
     { name: 'Leak Assignments', icon: <AlertTriangleIcon />, page: 'leak-assignments' },
     { name: 'Asset Inspections', icon: <PackageIcon />, page: 'asset-inspections' },
-    { name: 'Water Quality Samples', icon: <FlaskConicalIcon />, page: 'water-quality-samples' },
+    // { name: 'Water Quality Samples', icon: <FlaskConicalIcon />, page: 'water-quality-samples' },
   ];
 
   return (
@@ -810,14 +814,17 @@ const FieldOfficerLayout: React.FC<FieldOfficerLayoutProps> = ({
 
       {/* Sidebar */}
       <aside
-        className={`fixed inset-y-0 left-0 bg-blue-800 text-white w-64 p-6 space-y-6 transform md:relative md:translate-x-0 transition-transform duration-200 ease-in-out z-40 ${
+        className={`fixed inset-y-0 left-0 bg-blue-100 text-white w-64 p-6 space-y-6 transform md:relative md:translate-x-0 transition-transform duration-200 ease-in-out z-40 ${
           isSidebarOpen ? 'translate-x-0' : '-translate-x-full'
         }`}
       >
         <div className="flex items-center justify-between mb-8">
-          <div className="flex items-center space-x-2">
-            <WaterDropletLogo className="text-blue-100 w-8 h-8" />
-            <h1 className="text-2xl font-bold text-blue-100">FieldNet Officer</h1>
+          <div>
+            <div className="flex items-center space-x-2">
+              <Droplets className="h-8 w-8 text-blue-800 mr-3" />
+              <h1 className="text-2xl font-bold text-blue-800">WaterNet</h1>
+            </div>
+            <h1 className="text-base font-bold text-blue-800 ml-12 mt-2">Field Officer</h1>
           </div>
           <button className="md:hidden text-white" onClick={() => setIsSidebarOpen(false)}>
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -836,7 +843,7 @@ const FieldOfficerLayout: React.FC<FieldOfficerLayoutProps> = ({
                   className={`flex items-center space-x-3 p-3 rounded-md transition-colors ${
                     currentPage === item.page
                       ? 'bg-blue-700 text-white'
-                      : 'text-blue-200 hover:bg-blue-700 hover:text-white'
+                      : 'text-blue-800 hover:bg-blue-500 hover:text-white'
                   }`}
                 >
                   {item.icon}
@@ -846,10 +853,11 @@ const FieldOfficerLayout: React.FC<FieldOfficerLayoutProps> = ({
             ))}
           </ul>
         </nav>
-        <div className="pt-4 border-t border-blue-700">
-          <div className="text-sm text-blue-200 mb-2">Logged in as:</div>
-          <div className="text-md font-semibold text-blue-100 mb-2">{currentFieldOfficer?.full_name || 'Field Officer'}</div>
-          <div className="text-xs text-blue-300 break-words mb-4">User ID: {userId}</div>
+        <div className="pt-4 border-t border-blue-700 absolute bottom-6">
+          <div className="text-sm text-blue-800 mb-2 flex">Logged in as:
+          <div className="text-sm font-semibold text-blue-800 mb-2">{currentFieldOfficer?.full_name || 'Field Officer'}</div>
+          </div>
+          {/* <div className="text-xs text-blue-300 break-words mb-4">User ID: {userId}</div> */}
           <Button onClick={logout} variant="outlined" size="small" className="w-full border-blue-400 text-blue-100 hover:bg-blue-700 hover:text-white">
             Log Out
           </Button>
@@ -902,12 +910,13 @@ const FieldOfficerLoginPage: React.FC<{ setCurrentPage: (page: string) => void }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-600 to-blue-800 p-4">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-600 via-purple-600 to-blue-800 p-4">
       <div className="bg-white p-8 rounded-lg shadow-xl w-full max-w-md">
-        <div className="flex justify-center mb-6">
-          <WaterDropletLogo className="text-blue-800 w-12 h-12" />
+        <div className="flex items-center gap-x-2 justify-center mb-3">
+          <Droplets />
+          <h1 className="text-3xl font-bold text-center text-gray-800">WaterNet</h1>
         </div>
-        <h2 className="text-3xl font-bold text-center text-gray-800 mb-6">Field Officer Login</h2>
+        <h2 className="text-xl font-bold text-center text-gray-800 mb-6">Field Officer Login</h2>
         {error && <p className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-md mb-4">{error}</p>}
         <Input
           label="Username"
@@ -935,7 +944,7 @@ const FieldOfficerLoginPage: React.FC<{ setCurrentPage: (page: string) => void }
 };
 
 
-const FieldOfficerDashboardPage: React.FC = () => {
+const FieldOfficerDashboardPage: React.FC<{setCurrentPage:(page: string) => void;}> = ({setCurrentPage}) => {
   const { userId } = useAuth();
   const [assignedLeaksCount, setAssignedLeaksCount] = useState<number>(0);
   const [recentReadingsCount, setRecentReadingsCount] = useState<number>(0);
@@ -986,6 +995,12 @@ const FieldOfficerDashboardPage: React.FC = () => {
       </div>
 
       <div className="bg-white rounded-lg shadow p-6 flex flex-col items-center justify-center text-center">
+        <PackageIcon className="text-blue-600 mb-3 w-12 h-12" />
+        <h3 className="text-xl font-semibold text-gray-700">Asset inspections (Last 30 Days)</h3>
+        <p className="text-4xl font-bold text-blue-800">{recentReadingsCount}</p>
+        <p className="text-gray-500 text-sm mt-1">Infastructures and assets inspected</p>
+      </div>
+      <div className="bg-white rounded-lg shadow p-6 flex flex-col items-center justify-center text-center">
         <GaugeIcon className="text-blue-600 mb-3 w-12 h-12" />
         <h3 className="text-xl font-semibold text-gray-700">Readings (Last 30 Days)</h3>
         <p className="text-4xl font-bold text-blue-800">{recentReadingsCount}</p>
@@ -996,11 +1011,12 @@ const FieldOfficerDashboardPage: React.FC = () => {
       <div className="lg:col-span-3 bg-white rounded-lg shadow p-6">
         <h3 className="text-xl font-semibold text-gray-700 mb-4">Quick Actions</h3>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-          <Button variant="primary" size="large" onClick={() => {/* navigate to single reading */}}>Upload Single Reading</Button>
-          <Button variant="secondary" size="large" onClick={() => {/* navigate to bulk readings */}}>Bulk Upload Readings</Button>
-          <Button variant="outlined" size="large" onClick={() => {/* navigate to leak assignments */}}>View My Leak Assignments</Button>
+          <Button variant="primary" size="large" onClick={() => {setCurrentPage('single-meter-reading')}}>Upload Single Reading</Button>
+          <Button variant="secondary" size="large" onClick={() => {setCurrentPage('bulk-meter-reading')}}>Bulk Upload Readings</Button>
+          <Button variant="outlined" size="large" onClick={() => {setCurrentPage('leak-assignments')}}>View My Leak Assignments</Button>
         </div>
       </div>
+      <OcrReader />
     </div>
   );
 };
@@ -1014,6 +1030,7 @@ const SingleMeterReadingUploadPage: React.FC = () => {
   const [message, setMessage] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [inputFormatText,setInputFormatText]=useState<boolean>(true)
 
   const availableMeters = mockData.infrastructureAssets.filter(asset => asset.asset_type_id === 5); // Only meters
 
@@ -1061,6 +1078,34 @@ const SingleMeterReadingUploadPage: React.FC = () => {
       {message && <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded-md mb-4">{message}</div>}
       {error && <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-md mb-4">{error}</div>}
 
+      <Box>
+        <RadioGroup
+            row
+            aria-labelledby="demo-row-radio-buttons-group-label"
+            name="row-radio-buttons-group"
+            sx={{display:'flex',alignItems:'center',justifyContent:'center',padding:'0 .25em'}}
+        >
+            <FormControlLabel
+                value="yes"
+                name="inputFormat"
+                onChange={()=>{setInputFormatText(!inputFormatText)}}
+                control={<Radio checked={!inputFormatText} />}
+                label="Upload snapshot of meter"
+                sx={{width:'45%'}}
+            />
+            <FormControlLabel
+                value="no"
+                name="openForAdmissions"
+                onChange={()=>{setInputFormatText(!inputFormatText)}}
+                control={
+                    <Radio checked={inputFormatText} />
+                }
+                label="Enter readings manually"
+                sx={{width:'45%'}}
+            />
+        </RadioGroup>
+      </Box>
+      {inputFormatText? 
       <form onSubmit={handleSubmit}>
         <Select
           label="Select Meter"
@@ -1089,6 +1134,9 @@ const SingleMeterReadingUploadPage: React.FC = () => {
           {loading ? 'Submitting...' : 'Submit Reading'}
         </Button>
       </form>
+      :
+      <OcrReader />
+      }
     </div>
   );
 };
@@ -1096,106 +1144,18 @@ const SingleMeterReadingUploadPage: React.FC = () => {
 
 const BulkMeterReadingUploadPage: React.FC = () => {
   const { userId } = useAuth();
-  const [csvInput, setCsvInput] = useState('');
-  const [message, setMessage] = useState<string | null>(null);
-  const [error, setError] = useState<string | null>(null);
-  const [loading, setLoading] = useState(false);
-
-  const handleBulkUpload = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setError(null);
-    setMessage(null);
-    if (!userId) {
-      setError('Please log in to perform bulk upload.');
-      return;
-    }
-    if (!csvInput.trim()) {
-      setError('Please paste CSV data for bulk upload.');
-      return;
-    }
-
-    const lines = csvInput.trim().split('\n');
-    const readingsToUpload: Omit<MeterReading, 'reading_id' | 'created_at'>[] = [];
-    const errors: string[] = [];
-
-    lines.forEach((line, index) => {
-      const parts = line.split(',').map(p => p.trim());
-      if (parts.length !== 3) { // Expecting meter_asset_id, reading_date, volume_consumed_liters
-        errors.push(`Row ${index + 1}: Invalid format. Expected 'meter_id,date,volume'.`);
-        return;
-      }
-      const [meterId, dateStr, volumeStr] = parts;
-      const volume = parseFloat(volumeStr);
-      const readingDate = dateStr; // Assuming YYYY-MM-DD format
-
-      if (!meterId || isNaN(volume) || volume <= 0 || !readingDate) {
-        errors.push(`Row ${index + 1}: Missing or invalid data. Check meter ID, date, or positive volume.`);
-        return;
-      }
-
-      // Validate meterId exists (mock check)
-      const meterExists = mockData.infrastructureAssets.some(asset => asset.asset_id === meterId && asset.asset_type_id === 5);
-      if (!meterExists) {
-        errors.push(`Row ${index + 1}: Meter ID '${meterId}' not found or is not a meter asset.`);
-        return;
-      }
-
-      readingsToUpload.push({
-        meter_asset_id: meterId,
-        reading_date: readingDate,
-        volume_consumed_liters: volume,
-        reported_by_user_id: userId,
-      });
-    });
-
-    if (errors.length > 0) {
-      setError(`Validation Errors:\n${errors.join('\n')}`);
-      return;
-    }
-
-    setLoading(true);
-    try {
-      await mockApi.bulkCreateMeterReadings(readingsToUpload);
-      setMessage(`Successfully uploaded ${readingsToUpload.length} meter readings!`);
-      setCsvInput('');
-    } catch (err) {
-      console.error('Failed to bulk upload meter readings:', err);
-      setError('Failed to bulk upload meter readings. Please check format and try again.');
-    } finally {
-      setLoading(false);
-    }
-  };
+  // const [csvInput, setCsvInput] = useState('');
+  // const [message, setMessage] = useState<string | null>(null);
+  // const [error, setError] = useState<string | null>(null);
 
   if (!userId) return <div className="text-center p-6 text-gray-700">Please log in to upload meter readings.</div>;
 
   return (
     <div className="bg-white rounded-lg shadow p-6 max-w-2xl mx-auto">
       <h2 className="text-2xl font-bold text-gray-800 mb-6 text-center">Bulk Upload Meter Readings</h2>
-      <p className="text-gray-600 mb-4 text-center">
-        Paste multiple meter readings in CSV format: `meter_id,reading_date(YYYY-MM-DD),volume_liters` (one per line).
-      </p>
-      <p className="text-sm text-gray-500 mb-4 text-center">
-        Example:<br/>
-        `meter-douala-001,2024-06-01,10500`<br/>
-        `meter-yaounde-001,2024-06-02,9800`
-      </p>
-      {message && <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded-md mb-4 whitespace-pre-wrap">{message}</div>}
-      {error && <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-md mb-4 whitespace-pre-wrap">{error}</div>}
-
-      <form onSubmit={handleBulkUpload}>
-        <Input
-          label="CSV Data"
-          type="textarea"
-          value={csvInput}
-          onChange={(e) => setCsvInput(e.target.value)}
-          placeholder="Paste your meter reading CSV data here..."
-          rows={10}
-          required
-        />
-        <Button type="submit" className="w-full mt-4" disabled={loading}>
-          {loading ? 'Uploading...' : 'Process Bulk Upload'}
-        </Button>
-      </form>
+      {/* {message && <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded-md mb-4 whitespace-pre-wrap">{message}</div>} */}
+      {/* {error && <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-md mb-4 whitespace-pre-wrap">{error}</div>} */}
+      <ReportPreview showReportPreview={false} reports={[]} />
     </div>
   );
 };
@@ -1713,7 +1673,7 @@ function App() {
   const renderPage = () => {
     switch (currentPage) {
       case 'field-dashboard':
-        return <FieldOfficerDashboardPage />;
+        return <FieldOfficerDashboardPage setCurrentPage={setCurrentPage} />;
       case 'single-meter-reading':
         return <SingleMeterReadingUploadPage />;
       case 'bulk-meter-reading':

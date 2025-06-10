@@ -1,21 +1,25 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Droplets, Users, BarChart3, Bell, Search,
   Plus, Edit, Eye, Filter, Download,
-  AlertTriangle, CheckCircle, XCircle, TrendingUp, TrendingDown, FileText, Map, Database, Waves, Gauge,
-  UsersIcon,
+  AlertTriangle, CheckCircle, XCircle, TrendingUp, TrendingDown, Map, Database, Waves, Gauge,
   Package,
   Droplet,
   AlertTriangleIcon,
   FlaskConicalIcon,
   UploadCloudIcon,
   DollarSignIcon,
-  ClipboardListIcon
+  ClipboardListIcon,
+  Menu
 } from 'lucide-react';
 import { Button, HomeIcon } from './citizen';
-import { BudgetAllocationsPage, DashboardPage, InfrastructureAssetsPage, LeakReportsPage, MeterReadingsPage, NotFoundPage, WaterQualityTestsPage, WaterSourcesPage } from './App2';
+import { BudgetAllocationsPage, NotFoundPage, SurveyDataPage } from './App2';
 import WaterSources from './components/WaterSource';
 import Reports from './components/Reports';
+import InfrastructureAssets from './components/InfrastructureAssets';
+import MeterReadings from './components/MeterReadings';
+import QualityTests from './components/QualityTests';
+import { Avatar } from '@mui/material';
 // import { Button } from '@mui/material';
 // import { UserRole } from './App2';
 
@@ -150,6 +154,11 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({
   const [waterSources, setWaterSources] = useState<WaterSource[]>(sampleWaterSources);
   const [reports, setReports] = useState<ReportData[]>(sampleReports);
   
+  useEffect(()=>{
+    setWaterSources(sampleWaterSources)
+    setReports(sampleReports)
+  },[])
+
   const stats: DashboardStats = {
     totalSources: waterSources.length,
     activeSources: waterSources.filter(s => s.status === 'active').length,
@@ -173,16 +182,6 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({
 
   return (
     <div className="flex h-screen bg-gray-100 font-sans">
-      {/* Sidebar Toggle for Mobile */}
-      <div className="md:hidden p-4">
-        <Button onClick={() => setIsSidebarOpen(!isSidebarOpen)} variant="secondary">
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <line x1="3" y1="12" x2="21" y2="12"></line>
-            <line x1="3" y1="6" x2="21" y2="6"></line>
-            <line x1="3" y1="18" x2="21" y2="18"></line>
-          </svg>
-        </Button>
-      </div>
 
       {/* Sidebar */}
       <aside
@@ -192,12 +191,15 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({
         style={{scrollbarWidth:'none'}}
       >
         <div className="flex items-center justify-between mb-8">
-          <div className="flex items-center space-x-2">
-            <Droplets className="h-8 w-8 text-blue-800 mr-3" />
-            <h1 className="text-2xl font-bold text-blue-800">WaterNet</h1>
+          <div>
+            <div className="flex items-center space-x-2">
+              <Droplets className="h-8 w-8 text-blue-800 mr-3" />
+              <h1 className="text-2xl font-bold text-blue-800">WaterNet</h1>
+            </div>
+            <h1 className="text-base font-bold text-blue-800 ml-12">Admin</h1>
           </div>
           <button className="md:hidden text-white" onClick={() => setIsSidebarOpen(false)}>
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="black" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <line x1="18" y1="6" x2="6" y2="18"></line>
               <line x1="6" y1="6" x2="18" y2="18"></line>
             </svg>{''}
@@ -224,7 +226,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({
           </ul>
         </nav>
         <div className="pt-4 border-t border-blue-700">
-          <div className="text-sm text-blue-200 mb-2">Logged in as:</div>
+          <div className="text-sm text-blue-800 mb-2">Logged in as:Admin</div>
           {/* <div className="text-xs text-blue-300 break-words mb-4">Account ID: {currentUserId}</div> */}
           <Button onClick={()=>{}} variant="outlined" size="small" className="w-full border-blue-400 text-blue-100 hover:bg-blue-700 hover:text-white">
             Log Out
@@ -235,7 +237,13 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({
       {/* Main Content */}
       <div className="flex-1 flex flex-col overflow-hidden">
         <header className="flex items-center justify-between bg-white p-4 shadow-md">
-          <h2 className="text-xl font-bold text-gray-800 capitalize">{currentPage.replace('-', ' ')}</h2>
+          <div className='flex items-center'>
+            {/* Sidebar Toggle for Mobile */}
+            <div className="md:hidden">
+              <Menu onClick={() => setIsSidebarOpen(!isSidebarOpen)} />
+            </div>
+            <h2 className="text-xl font-bold text-gray-800 capitalize ml-2">{currentPage.replace('-', ' ')}</h2>
+          </div>
           <div className="hidden md:block">
             <div className="flex items-center space-x-4">
               <div className="relative">
@@ -269,6 +277,10 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({
               </button>
             </div>
           </div>
+          <div className="md:hidden">
+              <Avatar>A</Avatar>
+              {/* <Menu onClick={() => setIsSidebarOpen(!isSidebarOpen)} /> */}
+            </div>
         </header>
         <main className="flex-1 overflow-x-hidden overflow-y-auto bg-gray-100 p-8 ">
           {children}
@@ -284,9 +296,16 @@ export default function WaterManagementDashboard() {
   const [reports, setReports] = useState<ReportData[]>(sampleReports);
   const [selectedRegion, setSelectedRegion] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
-  const [showAddModal, setShowAddModal] = useState(false);
+  // const [showAddModal, setShowAddModal] = useState(false);
   const [selectedSource, setSelectedSource] = useState<WaterSource | null>(null);
   const [currentPage, setCurrentPage] = useState<string>('dashboard');
+
+  useEffect(()=>{
+    setWaterSources(sampleWaterSources)
+    setReports(sampleReports)
+    setSelectedRegion('')
+    setSearchTerm('')
+  },[])
 
   const stats: DashboardStats = {
     totalSources: waterSources.length,
@@ -510,9 +529,7 @@ export default function WaterManagementDashboard() {
                 <div className="flex space-x-4 mb-8">
                   {[
                     { id: 'dashboard', label: 'Dashboard', icon: BarChart3 },
-                    { id: 'sources', label: 'Water Sources', icon: Droplets },
-                    { id: 'reports', label: 'Reports', icon: FileText },
-                    { id: 'map', label: 'Map View', icon: Map }
+                    { id: 'map', label: 'Map View of water sources', icon: Map }
                   ].map(tab => (
                     <button
                       key={tab.id}
@@ -604,7 +621,7 @@ export default function WaterManagementDashboard() {
                     <div className="flex items-center justify-between">
                       <h2 className="text-2xl font-bold text-gray-900">Water Sources</h2>
                       <button
-                        onClick={() => setShowAddModal(true)}
+                        // onClick={() => setShowAddModal(true)}
                         className="bg-gradient-to-r from-blue-600 to-cyan-500 text-white px-4 py-2 rounded-lg font-medium hover:from-blue-700 hover:to-cyan-600 transition-all duration-200 shadow-lg"
                       >
                         <Plus size={20} className="inline mr-2" />
@@ -736,17 +753,19 @@ export default function WaterManagementDashboard() {
         </div>
         );
       case 'infrastructure-assets':
-        return <InfrastructureAssetsPage />;
+        return <InfrastructureAssets />;
       case 'water-sources':
         return  <WaterSources />;
       case 'meter-readings':
-            return <MeterReadingsPage />;
+            return <MeterReadings />;
       case 'reports':
         return <Reports />;
       case 'water-quality-tests':
-        return <WaterQualityTestsPage />;
+        return <QualityTests />;
       case 'budget-allocations':
         return <BudgetAllocationsPage />;
+      case 'survey-data':
+        return <SurveyDataPage />;
       default:
         return <NotFoundPage />;
     }

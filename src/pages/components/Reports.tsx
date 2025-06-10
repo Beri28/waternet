@@ -1,11 +1,12 @@
-import React, { useState, useEffect } from 'react';
-import { Search, Plus, Users, Droplets, AlertTriangle, MapPin, Calendar, Database, Upload, Download, Bell, Filter } from 'lucide-react';
+import { useState} from 'react';
+import { Plus, AlertTriangle, MapPin, Download, Filter } from 'lucide-react';
 import { BarChart } from '@mui/x-charts/BarChart';
 import { PieChart } from '@mui/x-charts/PieChart';
 import { LineChart } from '@mui/x-charts/LineChart';
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas'; 
 import autoTable from 'jspdf-autotable';
+import ReportPreview from './ReportPreview';
 
 const Reports = () => {;
   const [reports, setReports] = useState([
@@ -483,7 +484,7 @@ const Reports = () => {;
 
   return (
     <div className="space-y-6">
-      <div className="flex justify-between items-center">
+      <div className="flex justify-between items-center flex-wrap gap-y-3">
         <h2 className="text-xl font-semibold text-gray-900">Reports & Incidents</h2>
         <div className="flex gap-2">
           <button
@@ -786,6 +787,7 @@ const Reports = () => {;
           </table>
         </div>
       </div>
+      <ReportPreview showReportPreview={true} reports={reports} />
     </div>
   );
 };

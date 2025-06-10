@@ -1,13 +1,18 @@
 import React, { useRef, useState } from 'react';
 import html2canvas from 'html2canvas';
+import Papa from 'papaparse';
 
 interface ReportPreviewProps {
+  showReportPreview:boolean
   reports: Array<any>;
 }
  // @mui/x-charts @mui/x-data-grid @mui/system jspdf jspdf-autotable html2canvas react-to-pdf
-const ReportPreview: React.FC<ReportPreviewProps> = ({ reports }) => {
+const ReportPreview: React.FC<ReportPreviewProps> = ({ reports,showReportPreview }) => {
   const previewRef = useRef<HTMLDivElement>(null);
   const [imageUrl, setImageUrl] = useState<string | null>(null);
+  const [parsedData, setParsedData] = useState<any[]>([]);
+  const [csvText, setCsvText] = useState('');
+  const [parseError, setParseError] = useState('');
 
   const handleGeneratePreview = async () => {
     if (previewRef.current) {
@@ -25,8 +30,67 @@ const ReportPreview: React.FC<ReportPreviewProps> = ({ reports }) => {
     }
   };
 
+  // CSV file upload handler
+  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setParseError('');
+    const file = e.target.files?.[0];
+    if (file) {
+      Papa.parse(file, {
+        header: true,
+        skipEmptyLines: true,
+        complete: (results) => {
+          setParsedData(results.data as any[]);
+        },
+        error: (err) => setParseError('CSV parse error: ' + err.message)
+      });
+    }
+  };
+
+  // CSV/text area parse handler
+  const handleParseText = () => {
+    setParseError('');
+    Papa.parse(csvText, {
+      header: true,
+      skipEmptyLines: true,
+      complete: (results) => {
+        setParsedData(results.data as any[]);
+      },
+      error: (err:any) => setParseError('CSV parse error: ' + err.message)
+    });
+  };
+
+  // Example send to backend (replace with your API call)
+  const handleSendToBackend = () => {
+    // Example: send parsedData to backend
+    alert('Ready to send to backend: ' + JSON.stringify(parsedData, null, 2));
+    // TODO: Replace with actual API call
+  };
+
   return (
     <div>
+      {/* CSV Upload & Text Parse UI */}
+      <div className="mb-6 p-4 bg-gray-50 rounded shadow">
+        <h3 className="font-semibold mb-2">Upload CSV or Paste Data</h3>
+        <input title='file' type="file" accept=".csv,text/csv" placeholder='Click here to upload file' onChange={handleFileUpload} className="mb-2 bg-slate-300 p-4 rounded-sm" />
+        <div className="my-2">or</div>
+        <textarea
+          className="w-full border rounded p-2 mb-2"
+          rows={4}
+          placeholder="Paste CSV or text data here..."
+          value={csvText}
+          onChange={e => setCsvText(e.target.value)}
+        />
+        <button onClick={handleParseText} className="px-3 py-1 bg-blue-600 text-white rounded mr-2">Parse Text</button>
+        {parseError && <div className="text-red-600 mt-2">{parseError}</div>}
+        {parsedData.length > 0 && (
+          <div className="mt-4">
+            <div className="font-semibold mb-1">Parsed JSON:</div>
+            <pre className="bg-white p-2 rounded border max-h-40 overflow-auto text-xs">{JSON.stringify(parsedData, null, 2)}</pre>
+            <button onClick={handleSendToBackend} className="px-3 py-1 bg-green-600 text-white rounded mt-2">Send to Backend</button>
+          </div>
+        )}
+      </div>
+      {showReportPreview &&
       <div ref={previewRef} className="bg-white p-4 rounded shadow mb-4">
         <h2 className="text-xl font-bold mb-2">Report Preview</h2>
         {/* Simple Chart Visualization */}
@@ -86,8 +150,9 @@ const ReportPreview: React.FC<ReportPreviewProps> = ({ reports }) => {
             ))}
           </tbody>
         </table>
+        <button onClick={handleGeneratePreview} className="px-4 py-2 bg-blue-600 text-white rounded mr-2 mt-4">Generate Preview</button>
       </div>
-      <button onClick={handleGeneratePreview} className="px-4 py-2 bg-blue-600 text-white rounded mr-2">Generate Preview</button>
+      }
       {imageUrl && (
         <>
           <div className="my-4">
