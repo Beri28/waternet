@@ -1020,74 +1020,74 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({
 
 // --- Pages ---
 
-const LoginPage: React.FC<{ setCurrentPage: (page: string) => void }> = ({ setCurrentPage }) => {
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
-  const { login, isLoading } = useAuth();
+// const LoginPage: React.FC<{ setCurrentPage: (page: string) => void }> = ({ setCurrentPage }) => {
+//   const [username, setUsername] = useState('');
+//   const [password, setPassword] = useState('');
+//   const [error, setError] = useState('');
+//   const { login, isLoading } = useAuth();
 
-  const handleLogin = async (role: UserRole) => {
-    setError('');
-    // In a real app, you'd validate username/password against an API
-    if (!username || !password) {
-      setError('Please enter username and password.');
-      return;
-    }
+//   const handleLogin = async (role: UserRole) => {
+//     setError('');
+//     // In a real app, you'd validate username/password against an API
+//     if (!username || !password) {
+//       setError('Please enter username and password.');
+//       return;
+//     }
 
-    // Mock login based on role
-    if (
-      (role === 'Administrator' && username === 'admin' && password === 'admin') ||
-      (role === 'Planner' && username === 'planner' && password === 'planner') ||
-      (role === 'Field Officer' && username === 'field' && password === 'field') ||
-      (role === 'NGO User' && username === 'ngo' && password === 'ngo')
-    ) {
-      login(role);
-      setCurrentPage('dashboard');
-    } else {
-      setError('Invalid username or password for selected role.');
-    }
-  };
+//     // Mock login based on role
+//     if (
+//       (role === 'Administrator' && username === 'admin' && password === 'admin') ||
+//       (role === 'Planner' && username === 'planner' && password === 'planner') ||
+//       (role === 'Field Officer' && username === 'field' && password === 'field') ||
+//       (role === 'NGO User' && username === 'ngo' && password === 'ngo')
+//     ) {
+//       login(role);
+//       setCurrentPage('dashboard');
+//     } else {
+//       setError('Invalid username or password for selected role.');
+//     }
+//   };
 
-  return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-600 to-blue-800 p-4">
-      <div className="bg-white p-8 rounded-lg shadow-xl w-full max-w-md">
-        <h2 className="text-3xl font-bold text-center text-gray-800 mb-6 ">WaterNet Login</h2>
-        {error && <p className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-md mb-4">{error}</p>}
-        <Input
-          label="Username"
-          type="text"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
-          placeholder="Enter your username"
-        />
-        <Input
-          label="Password"
-          type="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          placeholder="Enter your password"
-        />
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
-          <Button onClick={() => handleLogin('Administrator')} disabled={isLoading} className="w-full">
-            {isLoading ? 'Logging In...' : 'Login as Admin'}
-          </Button>
-          <Button onClick={() => handleLogin('Planner')} disabled={isLoading} className="w-full" variant="secondary">
-            {isLoading ? 'Logging In...' : 'Login as Planner'}
-          </Button>
-          <Button onClick={() => handleLogin('Field Officer')} disabled={isLoading} className="w-full" variant="outlined">
-            {isLoading ? 'Logging In...' : 'Login as Field Officer'}
-          </Button>
-          <Button onClick={() => handleLogin('NGO User')} disabled={isLoading} className="w-full" variant="secondary">
-            {isLoading ? 'Logging In...' : 'Login as NGO User'}
-          </Button>
-        </div>
-        <p className="text-center text-sm text-gray-600 mt-6">
-          Hint: Use username/password as `admin/admin`, `planner/planner`, `field/field`, or `ngo/ngo`.
-        </p>
-      </div>
-    </div>
-  );
-};
+//   return (
+//     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-600 to-blue-800 p-4">
+//       <div className="bg-white p-8 rounded-lg shadow-xl w-full max-w-md">
+//         <h2 className="text-3xl font-bold text-center text-gray-800 mb-6 ">WaterNet Login</h2>
+//         {error && <p className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-md mb-4">{error}</p>}
+//         <Input
+//           label="Username"
+//           type="text"
+//           value={username}
+//           onChange={(e) => setUsername(e.target.value)}
+//           placeholder="Enter your username"
+//         />
+//         <Input
+//           label="Password"
+//           type="password"
+//           value={password}
+//           onChange={(e) => setPassword(e.target.value)}
+//           placeholder="Enter your password"
+//         />
+//         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
+//           <Button onClick={() => handleLogin('Administrator')} disabled={isLoading} className="w-full">
+//             {isLoading ? 'Logging In...' : 'Login as Admin'}
+//           </Button>
+//           <Button onClick={() => handleLogin('Planner')} disabled={isLoading} className="w-full" variant="secondary">
+//             {isLoading ? 'Logging In...' : 'Login as Planner'}
+//           </Button>
+//           <Button onClick={() => handleLogin('Field Officer')} disabled={isLoading} className="w-full" variant="outlined">
+//             {isLoading ? 'Logging In...' : 'Login as Field Officer'}
+//           </Button>
+//           <Button onClick={() => handleLogin('NGO User')} disabled={isLoading} className="w-full" variant="secondary">
+//             {isLoading ? 'Logging In...' : 'Login as NGO User'}
+//           </Button>
+//         </div>
+//         <p className="text-center text-sm text-gray-600 mt-6">
+//           Hint: Use username/password as `admin/admin`, `planner/planner`, `field/field`, or `ngo/ngo`.
+//         </p>
+//       </div>
+//     </div>
+//   );
+// };
 
 export const DashboardPage: React.FC = () => {
   const [assetCount, setAssetCount] = useState<number | null>(null);
@@ -2101,7 +2101,7 @@ export const NotFoundPage: React.FC = () => {
 
 // --- Main App Component ---
 export default function App2() {
-  const { isAuthenticated, userRole, logout, isLoading, currentUserId } = useAuth();
+  const { userRole, logout, isLoading, currentUserId } = useAuth();
   const [currentPage, setCurrentPage] = useState<string>('survey-data');
 
   if (isLoading) {

@@ -515,45 +515,13 @@ const Table = <T extends object>({ data, columns, keyAccessor }: TableProps<T>) 
 };
 
 
-interface DialogProps {
-  isOpen: boolean;
-  onClose: () => void;
-  title: string;
-  children: React.ReactNode;
-  actions?: React.ReactNode;
-}
-
-const Dialog: React.FC<DialogProps> = ({ isOpen, onClose, title, children, actions }) => {
-  if (!isOpen) return null;
-
-  return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center overflow-auto bg-gray-900 bg-opacity-50 p-4">
-      <div className="bg-white rounded-lg shadow-xl w-full max-w-lg mx-auto transform transition-all scale-100 opacity-100">
-        <div className="flex justify-between items-center px-6 py-4 border-b border-gray-200">
-          <h2 className="text-xl font-semibold text-gray-800">{title}</h2>
-          <button
-            onClick={onClose}
-            className="text-gray-400 hover:text-gray-600 transition-colors"
-            aria-label="Close"
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <line x1="18" y1="6" x2="6" y2="18"></line>
-              <line x1="6" y1="6" x2="18" y2="18"></line>
-            </svg>
-          </button>
-        </div>
-        <div className="p-6">
-          {children}
-        </div>
-        {actions && (
-          <div className="flex justify-end p-4 border-t border-gray-200">
-            {actions}
-          </div>
-        )}
-      </div>
-    </div>
-  );
-};
+// interface DialogProps {
+//   isOpen: boolean;
+//   onClose: () => void;
+//   title: string;
+//   children: React.ReactNode;
+//   actions?: React.ReactNode;
+// }
 
 
 // --- Layouts ---
@@ -915,7 +883,7 @@ const ReportLeakPage: React.FC = () => {
   const [loading, setLoading] = useState(false);
 
   const currentCitizen = mockData.citizenAccounts.find(c => c.citizen_id === citizenId);
-  const citizenVillage = currentCitizen ? mockData.villages.find(v => v.village_id === currentCitizen.property_id) : null; // Assuming property_id can sometimes be used to infer village for reporting
+  // const citizenVillage = currentCitizen ? mockData.villages.find(v => v.village_id === currentCitizen.property_id) : null; // Assuming property_id can sometimes be used to infer village for reporting
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -1031,7 +999,7 @@ const ConsumptionHistoryPage: React.FC = () => {
       <div className="mb-8 p-4 bg-blue-50 rounded-lg border border-blue-200">
         <h3 className="text-xl font-semibold text-blue-700 mb-4">Consumption Trend (Mock Chart)</h3>
         <div className="w-full h-48 bg-blue-100 flex items-end justify-around rounded-md overflow-hidden">
-          {readings.slice(0, 6).reverse().map((reading, index) => (
+          {readings.slice(0, 6).reverse().map((reading) => (
             <div
               key={reading.reading_id}
               style={{ height: `${(reading.volume_consumed_liters / 15000) * 100}%` }} // Scale to max 15000 for visualization

@@ -3,10 +3,11 @@ import html2canvas from 'html2canvas';
 import Papa from 'papaparse';
 
 interface ReportPreviewProps {
+  showReportPreview:boolean
   reports: Array<any>;
 }
  // @mui/x-charts @mui/x-data-grid @mui/system jspdf jspdf-autotable html2canvas react-to-pdf
-const ReportPreview: React.FC<ReportPreviewProps> = ({ reports }) => {
+const ReportPreview: React.FC<ReportPreviewProps> = ({ reports,showReportPreview }) => {
   const previewRef = useRef<HTMLDivElement>(null);
   const [imageUrl, setImageUrl] = useState<string | null>(null);
   const [parsedData, setParsedData] = useState<any[]>([]);
@@ -54,7 +55,7 @@ const ReportPreview: React.FC<ReportPreviewProps> = ({ reports }) => {
       complete: (results) => {
         setParsedData(results.data as any[]);
       },
-      error: (err) => setParseError('CSV parse error: ' + err.message)
+      error: (err:any) => setParseError('CSV parse error: ' + err.message)
     });
   };
 
@@ -70,7 +71,7 @@ const ReportPreview: React.FC<ReportPreviewProps> = ({ reports }) => {
       {/* CSV Upload & Text Parse UI */}
       <div className="mb-6 p-4 bg-gray-50 rounded shadow">
         <h3 className="font-semibold mb-2">Upload CSV or Paste Data</h3>
-        <input type="file" accept=".csv,text/csv" onChange={handleFileUpload} className="mb-2" />
+        <input title='file' type="file" accept=".csv,text/csv" placeholder='Click here to upload file' onChange={handleFileUpload} className="mb-2 bg-slate-300 p-4 rounded-sm" />
         <div className="my-2">or</div>
         <textarea
           className="w-full border rounded p-2 mb-2"
@@ -89,6 +90,7 @@ const ReportPreview: React.FC<ReportPreviewProps> = ({ reports }) => {
           </div>
         )}
       </div>
+      {showReportPreview &&
       <div ref={previewRef} className="bg-white p-4 rounded shadow mb-4">
         <h2 className="text-xl font-bold mb-2">Report Preview</h2>
         {/* Simple Chart Visualization */}
@@ -148,8 +150,9 @@ const ReportPreview: React.FC<ReportPreviewProps> = ({ reports }) => {
             ))}
           </tbody>
         </table>
+        <button onClick={handleGeneratePreview} className="px-4 py-2 bg-blue-600 text-white rounded mr-2 mt-4">Generate Preview</button>
       </div>
-      <button onClick={handleGeneratePreview} className="px-4 py-2 bg-blue-600 text-white rounded mr-2">Generate Preview</button>
+      }
       {imageUrl && (
         <>
           <div className="my-4">

@@ -3,8 +3,7 @@ import { useAuth } from "../Context/Auth-Context";
 // import { useThemeMode } from "../Context/ThemeContext";
 import { AppBar, Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, Drawer, FormControlLabel, IconButton, List, ListItem, ListItemText, Switch, Toolbar, Typography, useMediaQuery } from "@mui/material";
 import { Bug, LayoutDashboardIcon, ListCheck, LogOut, Menu, Paperclip, PlusCircle } from "lucide-react";
-import DataEntryForm from "./components/DataEntry";
-import ReportGenerator from "./components/ReportGenerator";
+// import DataEntryForm from "./components/DataEntry";
 
 // --- Custom Message Box Component ---
 export interface MessageBoxProps {
@@ -176,7 +175,7 @@ const AppContent: React.FC = () => {
   // const { mode, toggleColorMode } = useThemeMode();
   const [openDrawer, setOpenDrawer] = useState(false);
   const isMobile = useMediaQuery('(max-width:600px)');
-  const [currentPage, setCurrentPage] = useState('reports'); // Initial page
+  const [currentPage, setCurrentPage] = useState('dataEntry'); // Initial page
 
   const handleDrawerToggle = () => {
     setOpenDrawer(!openDrawer);
@@ -205,10 +204,6 @@ const AppContent: React.FC = () => {
     // }
 
     switch (currentPage) {
-      case 'dataEntry':
-        return <DataEntryForm />;
-      case 'reports':
-        return <ReportGenerator />;
       default:
         return <></>; // Fallback
     }

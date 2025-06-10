@@ -1,7 +1,7 @@
-import React, { useState, useRef } from 'react';
-import { Search, Plus, Users, Droplets, AlertTriangle, MapPin, Calendar, Database, Upload, Download, BarChart2, PieChart, LineChart, Filter } from 'lucide-react';
+import React, { useState, useRef, useEffect } from 'react';
+import {Droplets, AlertTriangle, MapPin,Upload, Download, BarChart2, PieChart, LineChart } from 'lucide-react';
 import Chart from 'chart.js/auto';
-import html2canvas from 'html2canvas';
+// import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
 
 const WaterSources = () => {
@@ -15,12 +15,17 @@ const WaterSources = () => {
   const [statusFilter, setStatusFilter] = useState('All');
   const [exporting, setExporting] = useState(false);
   const [exportError, setExportError] = useState('');
-  const chartRefs = {
-    bar: useRef(null),
-    pie: useRef(null),
-    line: useRef(null)
+  type ChartRef = {
+    current: (HTMLCanvasElement & { chartInstance?: Chart }) | null;
   };
-
+  useEffect(()=>{
+    setWaterSources(waterSources)
+  },[])
+  const chartRefs = {
+    bar: useRef<ChartRef['current']>(null),
+    pie: useRef<ChartRef['current']>(null),
+    line: useRef<ChartRef['current']>(null)
+  };
   // Filtered data
   const filteredSources = waterSources.filter(ws =>
     (regionFilter === 'All' || ws.region === regionFilter) &&
@@ -41,9 +46,9 @@ const WaterSources = () => {
   const regionCounts = regions.slice(1).map(region =>
     filteredSources.filter(ws => ws.region === region).length
   );
-  const typeCounts = Array.from(new Set(waterSources.map(ws => ws.type))).map(type =>
-    filteredSources.filter(ws => ws.type === type).length
-  );
+  // const typeCounts = Array.from(new Set(waterSources.map(ws => ws.type))).map(type =>
+  //   filteredSources.filter(ws => ws.type === type).length
+  // );
   const statusCounts = statuses.slice(1).map(status =>
     filteredSources.filter(ws => ws.status === status).length
   );
@@ -55,8 +60,9 @@ const WaterSources = () => {
   React.useEffect(() => {
     // Destroy previous charts if any
     Object.values(chartRefs).forEach(ref => {
-      if (ref.current && ref.current.chartInstance) {
-        ref.current.chartInstance.destroy();
+      const chart = ref.current as any;
+      if (chart && chart.chartInstance) {
+        chart.chartInstance.destroy();
       }
     });
     // Bar chart (by region)
@@ -142,19 +148,19 @@ const WaterSources = () => {
     }
   };
 
-  const handleExportJSON = () => {
-    try {
-      const blob = new Blob([JSON.stringify(filteredSources, null, 2)], { type: 'application/json' });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = 'water_sources.json';
-      a.click();
-      URL.revokeObjectURL(url);
-    } catch (e) {
-      setExportError('JSON export failed.');
-    }
-  };
+  // const handleExportJSON = () => {
+  //   try {
+  //     const blob = new Blob([JSON.stringify(filteredSources, null, 2)], { type: 'application/json' });
+  //     const url = URL.createObjectURL(blob);
+  //     const a = document.createElement('a');
+  //     a.href = url;
+  //     a.download = 'water_sources.json';
+  //     a.click();
+  //     URL.revokeObjectURL(url);
+  //   } catch (e) {
+  //     setExportError('JSON export failed.');
+  //   }
+  // };
 
   const handleExportPDF = async () => {
     setExporting(true);
@@ -165,7 +171,7 @@ const WaterSources = () => {
       doc.text('Water Sources Report', 14, 16);
       // Capture charts
       let y = 24;
-      for (const key of ['bar', 'pie', 'line']) {
+      for (const key of ['bar', 'pie', 'line'] as const) {
         const canvas = chartRefs[key].current;
         if (canvas) {
           const imgData = canvas.toDataURL('image/png');
@@ -195,32 +201,40 @@ const WaterSources = () => {
       default: return 'text-gray-600 bg-gray-100';
     }
   };
-
+  {/* Add useEffect to set width via CSS variable */}
+  {React.useEffect(() => {
+    document.querySelectorAll('.progress-bar-fill').forEach((el, idx) => {
+      const width = document.querySelectorAll('.progress-bar-fill')[idx]?.getAttribute('data-width');
+      if (width) {
+        (el as HTMLElement).style.setProperty('--progress-width', `${width}%`);
+      }
+    });
+  }, [filteredSources])}
   return (
     <div className="space-y-6">
-      <div className="flex justify-between items-center">
+      <div className="flex justify-between items-center flex-wrap gap-y-3">
         <h2 className="text-xl font-semibold text-gray-900">Water Sources Management</h2>
-        <div className="flex space-x-3">
+        <div className="flex space-x-3 flex-wrap gap-y-3">
           <button className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">
             <Upload className="h-4 w-4 mr-2" />
             Import Data
           </button>
           <button className="flex items-center px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700" onClick={handleExportPDF} disabled={exporting} title="Export as PDF">
             <Download className="h-4 w-4 mr-2" />
-            PDF
+            Export as PDF
           </button>
           <button className="flex items-center px-4 py-2 bg-gray-600 text-white rounded-md hover:bg-gray-700" onClick={handleExportCSV} title="Export as CSV">
             <Download className="h-4 w-4 mr-2" />
-            CSV
+            Export as CSV
           </button>
-          <button className="flex items-center px-4 py-2 bg-yellow-600 text-white rounded-md hover:bg-yellow-700" onClick={handleExportJSON} title="Export as JSON">
+          {/* <button className="flex items-center px-4 py-2 bg-yellow-600 text-white rounded-md hover:bg-yellow-700" onClick={handleExportJSON} title="Export as JSON">
             <Download className="h-4 w-4 mr-2" />
             JSON
-          </button>
+          </button> */}
         </div>
       </div>
       {/* Filters */}
-      <div className="flex space-x-4 items-center">
+      <div className="flex space-x-4 items-center flex-wrap gap-y-3">
         <label htmlFor="region-filter" className="flex items-center text-sm font-medium text-gray-700">
           <MapPin className="h-4 w-4 mr-1" />
           Region:
@@ -283,7 +297,7 @@ const WaterSources = () => {
         </div>
       </div>
       {/* Error notification */}
-      {exportError && <div className="text-red-600 font-medium">{exportError}</div>}
+      {exportError &&<div className="text-red-600 font-medium">{exportError}</div>}
       {/* Table */}
       <div className="bg-white rounded-lg shadow-md overflow-hidden">
         <div className="overflow-x-auto">
@@ -367,15 +381,7 @@ const WaterSources = () => {
         .progress-bar-bg { background-color: #e5e7eb; }
         .progress-bar-fill { transition: width 0.5s; width: var(--progress-width, 0%); }
       `}</style>
-      {/* Add useEffect to set width via CSS variable */}
-      {React.useEffect(() => {
-        document.querySelectorAll('.progress-bar-fill').forEach((el, idx) => {
-          const width = document.querySelectorAll('.progress-bar-fill')[idx]?.getAttribute('data-width');
-          if (width) {
-            (el as HTMLElement).style.setProperty('--progress-width', `${width}%`);
-          }
-        });
-      }, [filteredSources])}
+      
     </div>
   );
 };
