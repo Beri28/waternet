@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { BarChart2, PieChart, LineChart, Download, MapPin, Filter } from 'lucide-react';
 import Chart from 'chart.js/auto';
 import jsPDF from 'jspdf';
+import CsvToJsonUpload from './csv_upload/CsvToJsonUpload';
 
 interface Asset {
   id: number;
@@ -27,7 +28,18 @@ const InfrastructureAssets: React.FC = () => {
   const [typeFilter, setTypeFilter] = useState('All');
   const [exporting, setExporting] = useState(false);
   const [exportError, setExportError] = useState('');
-  const chartRefs:any = {
+  const [showAddModal, setShowAddModal] = useState(false);
+  const [showCsvModal, setShowCsvModal] = useState(false);
+  const [newAsset, setNewAsset] = useState<Partial<Asset>>({
+    asset_name: '',
+    region: '',
+    type: '',
+    condition_status: '',
+    last_maintenance_date: '',
+    district_id: '',
+    capacity_m3_per_day: 0
+  });
+  const chartRefs: any = {
     bar: useRef<HTMLCanvasElement | null>(null),
     pie: useRef<HTMLCanvasElement | null>(null),
     line: useRef<HTMLCanvasElement | null>(null)
@@ -55,15 +67,12 @@ const InfrastructureAssets: React.FC = () => {
   const typeCounts = types.slice(1).map(type =>
     filteredAssets.filter(a => a.type === type).length
   );
-  // const conditionCounts = Array.from(new Set(assets.map(a => a.condition_status))).map(status =>
-  //   filteredAssets.filter(a => a.condition_status === status).length
-  // );
   const assetNames = filteredAssets.map(a => a.asset_name);
   const capacityData = filteredAssets.map(a => a.capacity_m3_per_day);
 
   // Chart rendering
-  React.useEffect(() => {
-    Object.values(chartRefs).forEach((ref:any) => {
+  useEffect(() => {
+    Object.values(chartRefs).forEach((ref: any) => {
       const chart = ref.current as any;
       if (chart && chart.chartInstance) {
         chart.chartInstance.destroy();
@@ -116,7 +125,7 @@ const InfrastructureAssets: React.FC = () => {
       });
     }
     return () => {
-      Object.values(chartRefs).forEach((ref:any) => {
+      Object.values(chartRefs).forEach((ref: any) => {
         if (ref.current && ref.current.chartInstance) {
           ref.current.chartInstance.destroy();
         }
@@ -144,20 +153,6 @@ const InfrastructureAssets: React.FC = () => {
       setExportError('CSV export failed.');
     }
   };
-
-  // const handleExportJSON = () => {
-  //   try {
-  //     const blob = new Blob([JSON.stringify(filteredAssets, null, 2)], { type: 'application/json' });
-  //     const url = URL.createObjectURL(blob);
-  //     const a = document.createElement('a');
-  //     a.href = url;
-  //     a.download = 'infrastructure_assets.json';
-  //     a.click();
-  //     URL.revokeObjectURL(url);
-  //   } catch (e) {
-  //     setExportError('JSON export failed.');
-  //   }
-  // };
 
   const handleExportPDF = async () => {
     setExporting(true);
@@ -189,28 +184,107 @@ const InfrastructureAssets: React.FC = () => {
     }
     setExporting(false);
   };
-  useEffect(()=>{
-      setAssets(mockAssets)
-    },[])
+
+  // Add Asset Modal logic
+  const handleAddAsset = () => {
+    if (
+      newAsset.asset_name && newAsset.region && newAsset.type && newAsset.condition_status &&
+      newAsset.last_maintenance_date && newAsset.district_id && newAsset.capacity_m3_per_day
+    ) {
+      setAssets([
+        {
+          id: assets.length + 1,
+          asset_name: newAsset.asset_name,
+          region: newAsset.region,
+          type: newAsset.type,
+          condition_status: newAsset.condition_status,
+          last_maintenance_date: newAsset.last_maintenance_date,
+          district_id: newAsset.district_id,
+          capacity_m3_per_day: Number(newAsset.capacity_m3_per_day)
+        },
+        ...assets
+      ]);
+      setShowAddModal(false);
+      setNewAsset({
+        asset_name: '', region: '', type: '', condition_status: '', last_maintenance_date: '', district_id: '', capacity_m3_per_day: 0
+      });
+    }
+  };
+
+  // CSV Import logic
+  const handleCsvExtract = (parsedData: any[]) => {
+    const mapped = parsedData.map((a, idx) => ({
+      id: assets.length + idx + 1,
+      asset_name: a.asset_name || a.Name || '',
+      region: a.region || a.Region || '',
+      type: a.type || a.Type || '',
+      condition_status: a.condition_status || a.Condition || '',
+      last_maintenance_date: a.last_maintenance_date || a['Last Maintenance'] || '',
+      district_id: a.district_id || a.District || '',
+      capacity_m3_per_day: Number(a.capacity_m3_per_day || a['Capacity (m3/day)'] || 0)
+    }));
+    setAssets([...mapped, ...assets]);
+    setShowCsvModal(false);
+  };
+
+  useEffect(() => {
+    setAssets(mockAssets);
+  }, []);
+
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center flex-wrap gap-y-3">
         <h2 className="text-xl font-semibold text-gray-900">Infrastructure Assets Management</h2>
         <div className="flex space-x-3 ">
-          <button className="flex items-center px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700" onClick={handleExportPDF} disabled={exporting} title="Export as PDF">
+          <button type="button" className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700" onClick={() => setShowAddModal(true)}>
+            + Add Asset
+          </button>
+          <button type="button" className="flex items-center px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700" onClick={() => setShowCsvModal(true)}>
+            Import CSV
+          </button>
+          <button type="button" className="flex items-center px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700" onClick={handleExportPDF} disabled={exporting} title="Export as PDF">
             <Download className="h-4 w-4 mr-2" />
             Export as PDF
           </button>
-          <button className="flex items-center px-4 py-2 bg-gray-600 text-white rounded-md hover:bg-gray-700" onClick={handleExportCSV} title="Export as CSV">
+          <button type="button" className="flex items-center px-4 py-2 bg-gray-600 text-white rounded-md hover:bg-gray-700" onClick={handleExportCSV} title="Export as CSV">
             <Download className="h-4 w-4 mr-2" />
             Export as CSV
           </button>
-          {/* <button className="flex items-center px-4 py-2 bg-yellow-600 text-white rounded-md hover:bg-yellow-700" onClick={handleExportJSON} title="Export as JSON">
-            <Download className="h-4 w-4 mr-2" />
-            JSON
-          </button> */}
         </div>
       </div>
+      {/* Add Asset Modal */}
+      {showAddModal && (
+        <div className="fixed inset-0 bg-[#00000066] h-screen bg-opacity-30 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg shadow-lg p-6 w-full max-w-md">
+            <h3 className="text-lg font-semibold mb-4">Add New Asset</h3>
+            <div className="space-y-3">
+              <input className="w-full border rounded px-2 py-1" placeholder="Asset Name" value={newAsset.asset_name} onChange={e => setNewAsset({ ...newAsset, asset_name: e.target.value })} />
+              <input className="w-full border rounded px-2 py-1" placeholder="Region" value={newAsset.region} onChange={e => setNewAsset({ ...newAsset, region: e.target.value })} />
+              <input className="w-full border rounded px-2 py-1" placeholder="Type" value={newAsset.type} onChange={e => setNewAsset({ ...newAsset, type: e.target.value })} />
+              <input className="w-full border rounded px-2 py-1" placeholder="Condition Status" value={newAsset.condition_status} onChange={e => setNewAsset({ ...newAsset, condition_status: e.target.value })} />
+              <input className="w-full border rounded px-2 py-1" placeholder="Last Maintenance Date" value={newAsset.last_maintenance_date} onChange={e => setNewAsset({ ...newAsset, last_maintenance_date: e.target.value })} />
+              <input className="w-full border rounded px-2 py-1" placeholder="District ID" value={newAsset.district_id} onChange={e => setNewAsset({ ...newAsset, district_id: e.target.value })} />
+              <input className="w-full border rounded px-2 py-1" type="number" placeholder="Capacity (m³/day)" value={newAsset.capacity_m3_per_day} onChange={e => setNewAsset({ ...newAsset, capacity_m3_per_day: Number(e.target.value) })} />
+            </div>
+            <div className="flex justify-end space-x-2 mt-4">
+              <button type="button" className="px-4 py-2 border rounded" onClick={() => setShowAddModal(false)}>Cancel</button>
+              <button type="button" className="px-4 py-2 bg-blue-600 text-white rounded" onClick={handleAddAsset}>Add</button>
+            </div>
+          </div>
+        </div>
+      )}
+      {/* CSV Import Modal */}
+      {showCsvModal && (
+        <div className="fixed inset-0 bg-[#00000066] h-screen bg-opacity-30 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg shadow-lg p-6 w-full max-w-lg">
+            <h3 className="text-lg font-semibold mb-4">Import Assets from file(excel or csv)</h3>
+            <CsvToJsonUpload onDataParsed={handleCsvExtract} />
+            <div className="flex justify-end mt-4">
+              <button type="button" className="px-4 py-2 border rounded" onClick={() => setShowCsvModal(false)}>Close</button>
+            </div>
+          </div>
+        </div>
+      )}
       {/* Filters */}
       <div className="flex space-x-4 items-center flex-wrap gap-y-3">
         <label htmlFor="region-filter" className="flex items-center text-sm font-medium text-gray-700">

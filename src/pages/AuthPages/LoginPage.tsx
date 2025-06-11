@@ -1,11 +1,14 @@
 import React, { useState } from 'react';
 import { Eye, EyeOff, Mail, Lock, User, Phone, Building, Droplets } from 'lucide-react';
+import { useToast } from '../../Context/toastContext';
+import { CircularProgress } from '@mui/material';
+import { LoginPage } from '../App2';
 
-interface LoginData {
-  email: string;
-  password: string;
-  remember: boolean;
-}
+// interface LoginData {
+//   email: string;
+//   password: string;
+//   remember: boolean;
+// }
 
 interface RegisterData {
   firstName: string;
@@ -20,15 +23,48 @@ interface RegisterData {
   agreeTerms: boolean;
 }
 
+function AwaitingAccountValidationPage({ email, onBackToLogin }: { email: string; onBackToLogin: () => void }) {
+  return (
+    <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-blue-600 via-purple-600 to-blue-800 p-4">
+      <div className="bg-white rounded-3xl shadow-2xl p-10 max-w-lg w-full flex flex-col items-center">
+        <div className="mb-6">
+          <Droplets size={64} className="text-blue-500 mx-auto animate-pulse" />
+        </div>
+        <h2 className="text-2xl font-bold text-gray-800 mb-2 text-center">Account Awaiting Validation</h2>
+        <p className="text-gray-600 text-center mb-4">
+          Thank you for registering!<br />
+          Your account <span className="font-semibold text-blue-700">{email}</span> is awaiting validation by an administrator.<br />
+          You will receive an email once your account is approved.
+        </p>
+        <div className="w-32 h-32 mb-6">
+          <svg viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="60" cy="60" r="56" fill="#e0e7ff" />
+            <path d="M40 70c0-11 18-11 18 0v6a9 9 0 01-18 0v-6z" fill="#60a5fa" />
+            <ellipse cx="60" cy="50" rx="18" ry="20" fill="#3b82f6" />
+            <ellipse cx="60" cy="50" rx="10" ry="12" fill="#fff" />
+            <circle cx="60" cy="50" r="4" fill="#60a5fa" />
+          </svg>
+        </div>
+        <button
+          onClick={onBackToLogin}
+          className="mt-4 px-6 py-2 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition"
+        >
+          Back to Login
+        </button>
+      </div>
+    </div>
+  );
+}
+
 export default function WaterAuthSystem() {
   const [activeTab, setActiveTab] = useState<'login' | 'register'>('login');
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [loginData, setLoginData] = useState<LoginData>({
-    email: '',
-    password: '',
-    remember: false
-  });
+  // const [loginData, setLoginData] = useState<LoginData>({
+  //   email: '',
+  //   password: '',
+  //   remember: false
+  // });
   const [registerData, setRegisterData] = useState<RegisterData>({
     firstName: '',
     lastName: '',
@@ -44,54 +80,63 @@ export default function WaterAuthSystem() {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const [loading, setLoading] = useState(false);
-
+  const [showAwaitingValidation, setShowAwaitingValidation] = useState(false)
   const regions = [
     'Adamaoua', 'Centre', 'East', 'Far North', 'Littoral', 
     'North', 'Northwest', 'South', 'Southwest', 'West'
   ];
 
   const roles = [
-    'Government Planner',
+    'Resource Analyst',
     'Field Officer',
     'NGO Representative',
     'Community Leader',
     'Water Engineer',
     'Data Analyst'
   ];
+  const {showToast}=useToast()
 
-  const handleLogin = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setError('');
-    setLoading(true);
+  // const handleLogin = async (e: React.FormEvent) => {
+  //   e.preventDefault();
+  //   setError('');
+  //   setLoading(true);
     
-    if (!loginData.email || !loginData.password) {
-      setError('Please fill in all required fields');
-      setLoading(false);
-      return;
-    }
+  //   if (!loginData.email || !loginData.password) {
+  //     setError('Please fill in all required fields');
+  //     setLoading(false);
+  //     return;
+  //   }
     
-    // Simulate API call
-    setTimeout(() => {
-      setSuccess('Login successful! Redirecting to dashboard...');
-      setLoading(false);
-      console.log('Login data:', loginData);
-    }, 1000);
-  };
+  //   // Simulate API call
+  //   setTimeout(() => {
+  //     setSuccess('Login successful! Redirecting to dashboard...');
+  //     setLoading(false);
+  //     console.log('Login data:', loginData);
+  //   }, 3000);
+  // };
 
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
+    setTimeout(()=>{
+      showToast("Credentials received",{ type: 'success' })
+    },3000)
+    setTimeout(()=>{
+      setShowAwaitingValidation(true)
+    },5000)
     setError('');
     setLoading(true);
     
     if (!registerData.firstName || !registerData.lastName || !registerData.email || 
         !registerData.password || !registerData.role || !registerData.region) {
       setError('Please fill in all required fields');
+      
       setLoading(false);
       return;
     }
     
     if (registerData.password !== registerData.confirmPassword) {
       setError('Passwords do not match');
+      showToast(`Passwords don't match`, { type: 'error' })
       setLoading(false);
       return;
     }
@@ -115,6 +160,21 @@ export default function WaterAuthSystem() {
       console.log('Register data:', registerData);
     }, 1000);
   };
+
+  if (showAwaitingValidation) {
+    return <AwaitingAccountValidationPage
+      email={registerData.email}
+      onBackToLogin={() => {
+        setShowAwaitingValidation(false);
+        setActiveTab('login');
+        setRegisterData({
+          firstName: '', lastName: '', email: '', phone: '', organization: '', role: '', region: '', password: '', confirmPassword: '', agreeTerms: false
+        });
+        setError('');
+        setSuccess('');
+      }}
+    />;
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-600 via-purple-600 to-blue-800 flex items-center justify-center p-4">
@@ -209,71 +269,71 @@ export default function WaterAuthSystem() {
                 <p className="text-green-800 text-sm">{success}</p>
               </div>
             )}
-
             {/* Login Form */}
             {activeTab === 'login' && (
-              <form onSubmit={handleLogin} className="space-y-6">
-                <div>
-                  <h2 className="text-3xl font-bold text-gray-900 mb-2">Welcome Back</h2>
-                  <p className="text-gray-600">Sign in to access your water management dashboard</p>
-                </div>
+              <LoginPage />
+              // <form onSubmit={handleLogin} className="space-y-6">
+              //   <div>
+              //     <h2 className="text-3xl font-bold text-gray-900 mb-2">Welcome Back</h2>
+              //     <p className="text-gray-600">Sign in to access your water management dashboard</p>
+              //   </div>
 
-                <div className="space-y-4">
-                  <div className="relative">
-                    <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
-                    <input
-                      type="email"
-                      placeholder="Email Address"
-                      value={loginData.email}
-                      onChange={(e) => setLoginData({...loginData, email: e.target.value})}
-                      className="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
-                      required
-                    />
-                  </div>
+              //   <div className="space-y-4">
+              //     <div className="relative">
+              //       <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
+              //       <input
+              //         type="email"
+              //         placeholder="Email Address"
+              //         value={loginData.email}
+              //         onChange={(e) => setLoginData({...loginData, email: e.target.value})}
+              //         className="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+              //         required
+              //       />
+              //     </div>
 
-                  <div className="relative">
-                    <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
-                    <input
-                      type={showPassword ? 'text' : 'password'}
-                      placeholder="Password"
-                      value={loginData.password}
-                      onChange={(e) => setLoginData({...loginData, password: e.target.value})}
-                      className="w-full pl-12 pr-12 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
-                      required
-                    />
-                    <button
-                      type="button"
-                      onClick={() => setShowPassword(!showPassword)}
-                      className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
-                    >
-                      {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
-                    </button>
-                  </div>
-                </div>
+              //     <div className="relative">
+              //       <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
+              //       <input
+              //         type={showPassword ? 'text' : 'password'}
+              //         placeholder="Password"
+              //         value={loginData.password}
+              //         onChange={(e) => setLoginData({...loginData, password: e.target.value})}
+              //         className="w-full pl-12 pr-12 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+              //         required
+              //       />
+              //       <button
+              //         type="button"
+              //         onClick={() => setShowPassword(!showPassword)}
+              //         className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
+              //       >
+              //         {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+              //       </button>
+              //     </div>
+              //   </div>
 
-                <div className="flex items-center justify-between">
-                  <label className="flex items-center">
-                    <input
-                      type="checkbox"
-                      checked={loginData.remember}
-                      onChange={(e) => setLoginData({...loginData, remember: e.target.checked})}
-                      className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
-                    />
-                    <span className="ml-2 text-sm text-gray-600">Remember me</span>
-                  </label>
-                  <a href="#" className="text-sm text-blue-600 hover:text-blue-800">
-                    Forgot password?
-                  </a>
-                </div>
+              //   <div className="flex items-center justify-between">
+              //     <label className="flex items-center">
+              //       <input
+              //         type="checkbox"
+              //         checked={loginData.remember}
+              //         onChange={(e) => setLoginData({...loginData, remember: e.target.checked})}
+              //         className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+              //       />
+              //       <span className="ml-2 text-sm text-gray-600">Remember me</span>
+              //     </label>
+              //     <a href="#" className="text-sm text-blue-600 hover:text-blue-800">
+              //       Forgot password?
+              //     </a>
+              //   </div>
 
-                <button
-                  type="submit"
-                  disabled={loading}
-                  className="w-full bg-gradient-to-r from-blue-600 to-cyan-500 text-white py-3 px-6 rounded-lg font-medium hover:from-blue-700 hover:to-cyan-600 transform hover:scale-[1.02] transition-all duration-200 shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  {loading ? 'Signing in...' : 'Sign In'}
-                </button>
-              </form>
+              //   <button
+              //     type="submit"
+              //     disabled={loading}
+              //     className="w-full bg-gradient-to-r from-blue-600 to-cyan-500 text-white py-3 px-6 rounded-lg font-medium hover:from-blue-700 hover:to-cyan-600 transform hover:scale-[1.02] transition-all duration-200 shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
+              //   >
+              //     {loading ? <CircularProgress color='inherit' size={30} /> : 'Sign In'}
+              //   </button>
+              // </form>
             )}
 
             {/* Register Form */}
@@ -336,7 +396,7 @@ export default function WaterAuthSystem() {
                   <Building className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
                   <input
                     type="text"
-                    placeholder="Organization"
+                    placeholder="Organization(optional)"
                     value={registerData.organization}
                     onChange={(e) => setRegisterData({...registerData, organization: e.target.value})}
                     className="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
@@ -435,7 +495,7 @@ export default function WaterAuthSystem() {
                   disabled={loading}
                   className="w-full bg-gradient-to-r from-blue-600 to-cyan-500 text-white py-3 px-6 rounded-lg font-medium hover:from-blue-700 hover:to-cyan-600 transform hover:scale-[1.02] transition-all duration-200 shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  {loading ? 'Creating Account...' : 'Create Account'}
+                  {loading ? <CircularProgress color='inherit' size={30} /> : 'Create Account'}
                 </button>
               </form>
             )}
