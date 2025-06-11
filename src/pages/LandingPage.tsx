@@ -242,7 +242,7 @@ const LandingPage: React.FC<LandingPageProps> = () => {
           <p className="text-xl opacity-90 mb-10">
             Join the WaterNet platform and contribute to a more efficient, transparent, and sustainable water future.
           </p>
-          <Button onClick={onLoginClick} size="large" className="bg-white text-blue-700 hover:bg-gray-100 transform hover:scale-105 transition-transform duration-300 shadow-lg">
+          <Button onClick={onLoginClick} size="large" className="bg-blue-200 text-blue-700 hover:bg-gray-100 transform hover:scale-105 transition-transform duration-300 shadow-lg">
             Login to WaterNet
           </Button>
         </div>
@@ -251,7 +251,6 @@ const LandingPage: React.FC<LandingPageProps> = () => {
       {/* Footer */}
       <footer className="py-8 bg-gray-900 text-gray-300 text-center text-sm px-6">
         <p>&copy; {new Date().getFullYear()} WaterNet Cameroon. All rights reserved.</p>
-        <p className="mt-2">Developed for Advanced Database Design and Administration, University of Buea.</p>
       </footer>
 
       {/* Tailwind CSS utility classes can be applied directly in a full project */}
