@@ -1,5 +1,6 @@
 import { Droplets } from 'lucide-react';
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 
 // --- Shared Utility Components (Simplified for direct use or assumed from main app) ---
 // In a real application, these would be imported from a shared components directory.
@@ -94,10 +95,15 @@ const SettingsIcon: React.FC<React.SVGProps<SVGSVGElement>> = () => (
 
 // --- Landing Page Component ---
 interface LandingPageProps {
-  onLoginClick: () => void;
+  // onLoginClick: () => void;
 }
 
-const LandingPage: React.FC<LandingPageProps> = ({ onLoginClick }) => {
+const LandingPage: React.FC<LandingPageProps> = () => {
+    const navigate=useNavigate()
+  
+  const onLoginClick=()=>{
+    navigate('/login')
+  }
   return (
     <div className="min-h-screen bg-gray-50 text-gray-800 font-inter antialiased">
       {/* Header/Navigation */}

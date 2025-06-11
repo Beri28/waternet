@@ -3,6 +3,8 @@ import {Droplets, AlertTriangle, MapPin,Upload, Download, BarChart2, PieChart, L
 import Chart from 'chart.js/auto';
 // import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
+import CsvToJsonUpload from './csv_upload/CsvToJsonUpload';
+import OcrReader from './OcrReader';
 
 const WaterSources = () => {
   const [waterSources, setWaterSources] = useState([
@@ -15,6 +17,13 @@ const WaterSources = () => {
   const [statusFilter, setStatusFilter] = useState('All');
   const [exporting, setExporting] = useState(false);
   const [exportError, setExportError] = useState('');
+  const [showAddModal, setShowAddModal] = useState(false);
+  const [showImportModal, setShowImportModal] = useState(false);
+  const [importStep, setImportStep] = useState<'choose'|'csv'|'pdf'>('choose');
+  const [newSource, setNewSource] = useState({
+    name: '', region: '', type: '', capacity: '', currentLevel: '', status: '', lastUpdate: ''
+  });
+  const [importError, setImportError] = useState('');
   type ChartRef = {
     current: (HTMLCanvasElement & { chartInstance?: Chart }) | null;
   };
@@ -210,12 +219,69 @@ const WaterSources = () => {
       }
     });
   }, [filteredSources])}
+  const handleCsvExtract = (parsedData: any[]) => {
+    const mapped = parsedData.map((ws: any, idx: number) => ({
+      id: waterSources.length + idx + 1,
+      name: ws.name || ws.Name || '',
+      region: ws.region || ws.Region || '',
+      type: ws.type || ws.Type || '',
+      capacity: Number(ws.capacity || ws.Capacity || 0),
+      currentLevel: Number(ws.currentLevel || ws['Current Level'] || 0),
+      status: ws.status || ws.Status || '',
+      lastUpdate: ws.lastUpdate || ws['Last Update'] || ''
+    }));
+    setWaterSources([...mapped, ...waterSources]);
+    setShowImportModal(false);
+    setImportStep('choose');
+    setImportError('');
+  };
+  const handleAddSource = () => {
+    if (!newSource.name || !newSource.region || !newSource.type || !newSource.capacity || !newSource.currentLevel || !newSource.status || !newSource.lastUpdate) {
+      setImportError('All fields are required.');
+      return;
+    }
+    setWaterSources([
+      {
+        id: waterSources.length + 1,
+        name: newSource.name,
+        region: newSource.region,
+        type: newSource.type,
+        capacity: Number(newSource.capacity),
+        currentLevel: Number(newSource.currentLevel),
+        status: newSource.status,
+        lastUpdate: newSource.lastUpdate
+      },
+      ...waterSources
+    ]);
+    setShowAddModal(false);
+    setNewSource({ name: '', region: '', type: '', capacity: '', currentLevel: '', status: '', lastUpdate: '' });
+    setImportError('');
+  };
+  const handleOcrExtract = (text: string) => {
+    try {
+      const lines = text.split('\n').filter(l => l.trim().length > 0);
+      if (lines.length < 2) throw new Error('No table data found.');
+      const headers = lines[0].split(/,|\s{2,}/).map(h => h.trim());
+      const data = lines.slice(1).map(line => {
+        const cols = line.split(/,|\s{2,}/);
+        const obj: any = {};
+        headers.forEach((h, i) => { obj[h] = cols[i]; });
+        return obj;
+      });
+      handleCsvExtract(data);
+    } catch (e) {
+      setImportError('Failed to extract table from OCR text. Please check the format.');
+    }
+  };
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center flex-wrap gap-y-3">
         <h2 className="text-xl font-semibold text-gray-900">Water Sources Management</h2>
         <div className="flex space-x-3 flex-wrap gap-y-3">
-          <button className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">
+          <button type="button" className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700" onClick={() => setShowAddModal(true)} aria-label="Add Source">
+            + Add Source
+          </button>
+          <button type="button" className="flex items-center px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700" onClick={() => { setShowImportModal(true); setImportStep('choose'); }} aria-label="Import Data">
             <Upload className="h-4 w-4 mr-2" />
             Import Data
           </button>
@@ -227,12 +293,68 @@ const WaterSources = () => {
             <Download className="h-4 w-4 mr-2" />
             Export as CSV
           </button>
-          {/* <button className="flex items-center px-4 py-2 bg-yellow-600 text-white rounded-md hover:bg-yellow-700" onClick={handleExportJSON} title="Export as JSON">
-            <Download className="h-4 w-4 mr-2" />
-            JSON
-          </button> */}
         </div>
       </div>
+      {/* Add Source Modal */}
+      {showAddModal && (
+        <div className="fixed inset-0 bg-[#00000066] h-screen bg-opacity-30 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg shadow-lg p-6 w-full max-w-md">
+            <h3 className="text-lg font-semibold mb-4">Add New Water Source</h3>
+            <div className="space-y-3">
+              <input className="w-full border rounded px-2 py-1" placeholder="Source Name" value={newSource.name} onChange={e => setNewSource({ ...newSource, name: e.target.value })} />
+              <input className="w-full border rounded px-2 py-1" placeholder="Region" value={newSource.region} onChange={e => setNewSource({ ...newSource, region: e.target.value })} />
+              <input className="w-full border rounded px-2 py-1" placeholder="Type" value={newSource.type} onChange={e => setNewSource({ ...newSource, type: e.target.value })} />
+              <input className="w-full border rounded px-2 py-1" type="number" placeholder="Capacity (L)" value={newSource.capacity} onChange={e => setNewSource({ ...newSource, capacity: e.target.value })} />
+              <input className="w-full border rounded px-2 py-1" type="number" placeholder="Current Level" value={newSource.currentLevel} onChange={e => setNewSource({ ...newSource, currentLevel: e.target.value })} />
+              <input className="w-full border rounded px-2 py-1" placeholder="Status" value={newSource.status} onChange={e => setNewSource({ ...newSource, status: e.target.value })} />
+              <input className="w-full border rounded px-2 py-1" placeholder="Last Update (YYYY-MM-DD)" value={newSource.lastUpdate} onChange={e => setNewSource({ ...newSource, lastUpdate: e.target.value })} />
+              {importError && <div className="text-red-600 text-sm">{importError}</div>}
+            </div>
+            <div className="flex justify-end space-x-2 mt-4">
+              <button type="button" className="px-4 py-2 border rounded" onClick={() => { setShowAddModal(false); setImportError(''); }}>Cancel</button>
+              <button type="button" className="px-4 py-2 bg-blue-600 text-white rounded" onClick={handleAddSource}>Add</button>
+            </div>
+          </div>
+        </div>
+      )}
+      {/* Import Data Modal */}
+      {showImportModal && (
+        <div className="fixed inset-0 bg-[#00000066] h-screen bg-opacity-30 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg shadow-lg p-6 w-full max-w-lg">
+            <h3 className="text-lg font-semibold mb-4">Import Water Sources</h3>
+            {importStep === 'choose' && (
+              <div className="space-y-4">
+                <button type="button" className="w-full px-4 py-2 bg-blue-600 text-white rounded" onClick={() => setImportStep('csv')}>Import from CSV</button>
+                <button type="button" className="w-full px-4 py-2 bg-indigo-600 text-white rounded" onClick={() => setImportStep('pdf')}>Import from PDF/Image (OCR)</button>
+                <button type="button" className="w-full px-4 py-2 border rounded" onClick={() => setShowImportModal(false)}>Cancel</button>
+              </div>
+            )}
+            {importStep === 'csv' && (
+              <div>
+                <CsvToJsonUpload onDataParsed={handleCsvExtract} />
+                <div className="flex justify-end mt-4 space-x-2">
+                  <button type="button" className="px-4 py-2 border rounded" onClick={() => setImportStep('choose')}>Back</button>
+                  <button type="button" className="px-4 py-2 border rounded" onClick={() => setShowImportModal(false)}>Close</button>
+                </div>
+              </div>
+            )}
+            {importStep === 'pdf' && (
+              <div>
+                <OcrReader />
+                <div className="flex flex-col mt-2">
+                  <label htmlFor="ocr-textarea" className="text-sm font-medium">Paste extracted table text here (CSV or table):</label>
+                  <textarea id="ocr-textarea" className="w-full border rounded p-2 mt-1" rows={4} placeholder="Paste table here..." onBlur={e => handleOcrExtract(e.target.value)} />
+                </div>
+                <div className="flex justify-end mt-4 space-x-2">
+                  <button type="button" className="px-4 py-2 border rounded" onClick={() => setImportStep('choose')}>Back</button>
+                  <button type="button" className="px-4 py-2 border rounded" onClick={() => setShowImportModal(false)}>Close</button>
+                </div>
+                {importError && <div className="text-red-600 text-sm mt-2">{importError}</div>}
+              </div>
+            )}
+          </div>
+        </div>
+      )}
       {/* Filters */}
       <div className="flex space-x-4 items-center flex-wrap gap-y-3">
         <label htmlFor="region-filter" className="flex items-center text-sm font-medium text-gray-700">

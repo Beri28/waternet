@@ -1,6 +1,6 @@
 import React, { useState, useEffect, createContext, useContext } from 'react';
 import OcrReader from './components/OcrReader';
-import { Droplets } from 'lucide-react';
+import { Droplets, Menu } from 'lucide-react';
 import ReportPreview from './components/ReportPreview';
 import {Box, FormControlLabel, Radio, RadioGroup } from '@mui/material';
 
@@ -801,16 +801,6 @@ const FieldOfficerLayout: React.FC<FieldOfficerLayoutProps> = ({
 
   return (
     <div className="flex h-screen bg-gray-100 font-sans">
-      {/* Sidebar Toggle for Mobile */}
-      <div className="md:hidden p-4">
-        <Button onClick={() => setIsSidebarOpen(!isSidebarOpen)} variant="secondary">
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <line x1="3" y1="12" x2="21" y2="12"></line>
-            <line x1="3" y1="6" x2="21" y2="6"></line>
-            <line x1="3" y1="18" x2="21" y2="18"></line>
-          </svg>
-        </Button>
-      </div>
 
       {/* Sidebar */}
       <aside
@@ -827,7 +817,7 @@ const FieldOfficerLayout: React.FC<FieldOfficerLayoutProps> = ({
             <h1 className="text-base font-bold text-blue-800 ml-12 mt-2">Field Officer</h1>
           </div>
           <button className="md:hidden text-white" onClick={() => setIsSidebarOpen(false)}>
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="black" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <line x1="18" y1="6" x2="6" y2="18"></line>
               <line x1="6" y1="6" x2="18" y2="18"></line>
             </svg>{' '}
@@ -867,10 +857,16 @@ const FieldOfficerLayout: React.FC<FieldOfficerLayoutProps> = ({
       {/* Main Content */}
       <div className="flex-1 flex flex-col overflow-hidden">
         <header className="flex items-center justify-between bg-white p-4 shadow-md">
-          <h2 className="text-xl font-semibold text-gray-800 capitalize">{currentPage.replace('-', ' ')}</h2>
+          <div className='flex items-center'>
+            <div className="md:hidden">
+              <Menu onClick={() => setIsSidebarOpen(!isSidebarOpen)} />
+            </div>
+            <h2 className="text-xl font-semibold text-gray-800 capitalize ml-2">{currentPage.replace('-', ' ')}</h2>
+          </div>
           <div className="hidden md:block">
             <span className="text-gray-700">Hello, {currentFieldOfficer?.full_name.split(' ')[0]}!</span>
           </div>
+          
         </header>
         <main className="flex-1 overflow-x-hidden overflow-y-auto bg-gray-100 p-4 md:p-6">
           {children}

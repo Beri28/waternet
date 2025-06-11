@@ -12,7 +12,6 @@ export const baseUrl='/api/v1'
 
 // good bg - bg-[#CAF0F8]
 function App() {
-
   return (
     <>
     <ToastProvider
@@ -29,7 +28,7 @@ function App() {
       <AuthProvider>
         <BrowserRouter>
           <Routes>
-            <Route path='/' element={<LandingPage onLoginClick={() => window.location.href = '/login'} />} />
+            <Route path='/' element={<LandingPage />} />
             <Route path='/home' element={<WaterManagementDashboard />} />
             <Route path='/citizen' element={<Citizen />} />
             <Route path='/worker' element={<FieldWorker />} />

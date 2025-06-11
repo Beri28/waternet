@@ -1,6 +1,8 @@
 
 import React, { useState, useEffect } from 'react';
 import AuthProvider, { useAuth } from '../Context/Auth2';
+import { useNavigate } from 'react-router-dom';
+import { CircularProgress } from '@mui/material';
 
 // --- Global Tailwind CSS (usually in index.css or main.css) ---
 // This would typically be imported from a CSS file. For this self-contained immersive,
@@ -1020,6 +1022,152 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({
 
 // --- Pages ---
 
+export const LoginPage= () => {
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
+  const {  isLoading } = useAuth();
+  const navigate=useNavigate()
+
+  const handleLogin = async (role: UserRole) => {
+    setError('');
+    setLoading(true)
+    // In a real app, you'd validate username/password against an API
+    if (!username || !password) {
+      setError('Please enter username and password.');
+      setLoading(false)
+      return;
+    }
+
+    // Mock login based on role
+    if (
+      (username === 'admin' && password === 'admin') ||
+      (role === 'Planner' && username === 'planner' && password === 'planner') ||
+      (username === 'field' && password === 'field') ||
+      (role === 'NGO User' && username === 'ngo' && password === 'ngo')
+    ) {
+      setTimeout(() => {
+        if(username === 'admin') navigate('/home')
+        if(username === 'field') navigate('/worker')
+        setLoading(false)
+      }, 3000);
+      // login(role);
+    } else {
+      setError('Invalid username or password for selected role.');
+      setLoading(false)
+    }
+  };
+
+  return (
+    <div className="">
+      {/* <form onSubmit={handleLogin} className="space-y-6">
+        <div>
+          <h2 className="text-3xl font-bold text-gray-900 mb-2">Welcome Back</h2>
+          <p className="text-gray-600">Sign in to access your water management dashboard</p>
+        </div>
+
+        <div className="space-y-4">
+          <div className="relative">
+            <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
+            <input
+              type="email"
+              placeholder="Email Address"
+              value={loginData.email}
+              onChange={(e) => setLoginData({...loginData, email: e.target.value})}
+              className="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+              required
+            />
+          </div>
+
+          <div className="relative">
+            <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
+            <input
+              type={showPassword ? 'text' : 'password'}
+              placeholder="Password"
+              value={loginData.password}
+              onChange={(e) => setLoginData({...loginData, password: e.target.value})}
+              className="w-full pl-12 pr-12 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+              required
+            />
+            <button
+              type="button"
+              onClick={() => setShowPassword(!showPassword)}
+              className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
+            >
+              {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+            </button>
+          </div>
+        </div>
+
+        <div className="flex items-center justify-between">
+          <label className="flex items-center">
+            <input
+              type="checkbox"
+              checked={loginData.remember}
+              onChange={(e) => setLoginData({...loginData, remember: e.target.checked})}
+              className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+            />
+            <span className="ml-2 text-sm text-gray-600">Remember me</span>
+          </label>
+          <a href="#" className="text-sm text-blue-600 hover:text-blue-800">
+            Forgot password?
+          </a>
+        </div>
+
+        <button
+          type="submit"
+          disabled={loading}
+          className="w-full bg-gradient-to-r from-blue-600 to-cyan-500 text-white py-3 px-6 rounded-lg font-medium hover:from-blue-700 hover:to-cyan-600 transform hover:scale-[1.02] transition-all duration-200 shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          {loading ? <CircularProgress color='inherit' size={30} /> : 'Sign In'}
+        </button>
+      </form> */}
+      <div className="space-y-6">
+        <h2 className="text-3xl font-bold text-gray-900 mb-2">Welcome Back</h2>
+        <p className="text-gray-600">Sign in to access your water management dashboard</p>
+        {error && <p className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-md mb-4">{error}</p>}
+        <Input
+          label="Username"
+          type="text"
+          value={username}
+          onChange={(e) => {
+            setUsername(e.target.value)
+            setError('')
+          }}
+          placeholder="Enter your username"
+        />
+        <Input
+          label="Password"
+          type="password"
+          value={password}
+          onChange={(e) => {
+            setPassword(e.target.value)
+            setError('')
+          }}
+          placeholder="Enter your password"
+        />
+        <div className="">
+          {/* <Button onClick={() => handleLogin('Administrator')} disabled={isLoading} className="w-full">
+            {isLoading ? 'Logging In...' : 'Login as Admin'}
+          </Button> */}
+          <Button onClick={() => handleLogin('Planner')} disabled={isLoading} className="w-full bg-gradient-to-r from-blue-600 to-cyan-500 py-3 px-6 rounded-lg font-medium hover:from-blue-700 hover:to-cyan-600 transform hover:scale-[1.02] transition-all duration-200 shadow-lg disabled:opacity-50 disabled:cursor-not-allowed">
+            {loading ? <CircularProgress color='inherit' size={30} /> : 'Login'}
+          </Button>
+          {/* <Button onClick={() => handleLogin('Field Officer')} disabled={isLoading} className="w-full" variant="outlined">
+            {isLoading ? <CircularProgress color='info' size={30} /> : 'Login as Field Officer'}
+          </Button> */}
+          {/* <Button onClick={() => handleLogin('NGO User')} disabled={isLoading} className="w-full" variant="secondary">
+            {isLoading ? 'Logging In...' : 'Login as NGO User'}
+          </Button> */}
+        </div>
+        <p className="text-center text-sm text-gray-600 mt-6">
+          Hint: Use username/password as `admin/admin`, `field/field`, for demo account.
+        </p>
+      </div>
+    </div>
+  );
+};
 // const LoginPage: React.FC<{ setCurrentPage: (page: string) => void }> = ({ setCurrentPage }) => {
 //   const [username, setUsername] = useState('');
 //   const [password, setPassword] = useState('');

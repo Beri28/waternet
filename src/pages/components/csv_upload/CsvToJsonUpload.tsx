@@ -6,7 +6,7 @@ interface CsvToJsonUploadProps {
 }
 
 const CsvToJsonUpload: React.FC<CsvToJsonUploadProps> = ({ onDataParsed }) => {
-  const [csvText, setCsvText] = useState('');
+  // const [csvText, setCsvText] = useState('');
   const [parseError, setParseError] = useState('');
   const [parsedData, setParsedData] = useState<any[]>([]);
 
@@ -26,32 +26,32 @@ const CsvToJsonUpload: React.FC<CsvToJsonUploadProps> = ({ onDataParsed }) => {
     }
   };
 
-  const handleParseText = () => {
-    setParseError('');
-    Papa.parse(csvText, {
-      header: true,
-      skipEmptyLines: true,
-      complete: (results) => {
-        setParsedData(results.data as any[]);
-        onDataParsed(results.data as any[]);
-      },
-      error: (err:any) => setParseError('CSV parse error: ' + err.message)
-    });
-  };
+  // const handleParseText = () => {
+  //   setParseError('');
+  //   Papa.parse(csvText, {
+  //     header: true,
+  //     skipEmptyLines: true,
+  //     complete: (results) => {
+  //       setParsedData(results.data as any[]);
+  //       onDataParsed(results.data as any[]);
+  //     },
+  //     error: (err:any) => setParseError('CSV parse error: ' + err.message)
+  //   });
+  // };
 
   return (
     <div className="mb-6 p-4 bg-gray-50 rounded shadow">
-      <h3 className="font-semibold mb-2">Upload CSV or Paste Data</h3>
-      <input name='file' title='file' type="file" accept=".csv,text/csv" onChange={handleFileUpload} className="mb-2" />
-      <div className="my-2">or</div>
+      <h3 className="font-semibold mb-2">Upload </h3>
+      <input name='file' title='file' type="file" accept=".csv,text/csv" onChange={handleFileUpload} className="mb-2 p-3 rounded-md bg-gray-200" />
+      {/* <div className="my-2">or</div>
       <textarea
         className="w-full border rounded p-2 mb-2"
         rows={4}
         placeholder="Paste CSV or text data here..."
         value={csvText}
         onChange={e => setCsvText(e.target.value)}
-      />
-      <button onClick={handleParseText} className="px-3 py-1 bg-blue-600 text-white rounded mr-2">Parse Text</button>
+      /> */}
+      {/* <button onClick={handleParseText} className="px-3 py-1 bg-blue-600 text-white rounded mr-2">Parse Text</button> */}
       {parseError && <div className="text-red-600 mt-2">{parseError}</div>}
       {parsedData.length > 0 && (
         <div className="mt-4">
