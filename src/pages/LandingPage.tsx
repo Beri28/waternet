@@ -301,8 +301,8 @@ const handleReportSubmit = (e: React.FormEvent) => {
           <p className="text-xl opacity-90 mb-10">
             Join the WaterNet platform and contribute to a more efficient, transparent, and sustainable water future.
           </p>
-          <Button onClick={onLoginClick} size="large" className="bg-blue-200 text-blue-700 hover:bg-gray-100 transform hover:scale-105 transition-transform duration-300 shadow-lg">
-            Login to WaterNet
+          <Button onClick={onLoginClick} size="large" className="bg-white text-blue-700 hover:bg-gray-100 transform hover:scale-105 transition-transform duration-300 shadow-lg">
+            Signup 
           </Button>
         </div>
       </section>
