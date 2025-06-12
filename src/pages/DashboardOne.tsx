@@ -20,6 +20,7 @@ import InfrastructureAssets from './components/InfrastructureAssets';
 import MeterReadings from './components/MeterReadings';
 import QualityTests from './components/QualityTests';
 import { Avatar } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
 // import { Button } from '@mui/material';
 // import { UserRole } from './App2';
 
@@ -179,7 +180,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({
     { name: 'Survey Data', icon: <UploadCloudIcon />, page: 'survey-data', roles: ['NGO User'] },
     { name: 'Budget Allocations', icon: <DollarSignIcon />, page: 'budget-allocations', roles: ['Administrator', 'Planner'] },
   ];
-
+  const navigate=useNavigate()
   return (
     <div className="flex h-screen bg-gray-100 font-sans">
 
@@ -228,7 +229,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({
         <div className="pt-4 border-t border-blue-700">
           <div className="text-sm text-blue-800 mb-2">Logged in as:Admin</div>
           {/* <div className="text-xs text-blue-300 break-words mb-4">Account ID: {currentUserId}</div> */}
-          <Button onClick={()=>{}} variant="outlined" size="small" className="w-full border-blue-400 text-blue-100 hover:bg-blue-700 hover:text-white">
+          <Button onClick={()=>{navigate('/')}} variant="outlined" size="small" className="w-full border-blue-400 text-blue-100 hover:bg-blue-700 hover:text-white">
             Log Out
           </Button>
         </div>
@@ -282,7 +283,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({
               {/* <Menu onClick={() => setIsSidebarOpen(!isSidebarOpen)} /> */}
             </div>
         </header>
-        <main className="flex-1 overflow-x-hidden overflow-y-auto bg-gray-100 p-8 ">
+        <main className="flex-1 overflow-x-hidden overflow-y-auto bg-gray-100 md:p-8 p-4 ">
           {children}
         </main>
       </div>
@@ -466,8 +467,8 @@ export default function WaterManagementDashboard() {
   );
 
   const SimpleMap = () => (
-    <div className="bg-white rounded-lg p-6 shadow-lg border border-gray-200">
-      <h3 className="text-lg font-semibold text-gray-900 mb-4">Water Sources Map</h3>
+    <div className="bg-white rounded-lg md:p-6 shadow-lg border border-gray-200">
+      <h3 className="text-lg font-semibold text-gray-900 mb-4 p-3">Water Sources Map</h3>
       <div className="relative bg-gradient-to-br from-blue-50 to-cyan-50 rounded-lg h-96 overflow-hidden">
         {/* Simulated map background */}
         <div className="absolute inset-0 opacity-30">
@@ -600,7 +601,10 @@ export default function WaterManagementDashboard() {
                       <div className="flex items-center justify-between mb-4">
                         <h3 className="text-lg font-semibold text-gray-900">Recent Reports</h3>
                         <button
-                          onClick={() => setActiveSection('reports')}
+                          onClick={() => {
+                            // setActiveSection('reports')
+                            setCurrentPage('reports')
+                          }}
                           className="text-blue-600 hover:text-blue-800 text-sm font-medium"
                         >
                           View All

@@ -42,7 +42,7 @@ const CsvToJsonUpload: React.FC<CsvToJsonUploadProps> = ({ onDataParsed }) => {
   return (
     <div className="mb-6 p-4 bg-gray-50 rounded shadow">
       <h3 className="font-semibold mb-2">Upload </h3>
-      <input name='file' title='file' type="file" accept=".csv,text/csv" onChange={handleFileUpload} className="mb-2 p-3 rounded-md bg-gray-200" />
+      <input name='file' title='file' type="file" accept=".csv,text/csv" onChange={handleFileUpload} className="mb-2 p-3 rounded-md bg-gray-200 w-full" />
       {/* <div className="my-2">or</div>
       <textarea
         className="w-full border rounded p-2 mb-2"

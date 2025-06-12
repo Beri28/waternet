@@ -3,6 +3,7 @@ import { BarChart2, PieChart, LineChart, Download, MapPin, Filter } from 'lucide
 import Chart from 'chart.js/auto';
 import jsPDF from 'jspdf';
 import CsvToJsonUpload from './csv_upload/CsvToJsonUpload';
+import { useToast } from '../../Context/toastContext';
 
 interface Asset {
   id: number;
@@ -23,6 +24,7 @@ const mockAssets: Asset[] = [
 ];
 
 const InfrastructureAssets: React.FC = () => {
+  const {showToast}=useToast()
   const [assets, setAssets] = useState<Asset[]>(mockAssets);
   const [regionFilter, setRegionFilter] = useState('All');
   const [typeFilter, setTypeFilter] = useState('All');
@@ -226,21 +228,26 @@ const InfrastructureAssets: React.FC = () => {
     setAssets([...mapped, ...assets]);
     setShowCsvModal(false);
   };
-
   useEffect(() => {
     setAssets(mockAssets);
+    setTimeout(()=>{
+      showToast("Douala Pump Station needs repair",{ type: 'warning' })
+    },1000)
+    setTimeout(()=>{
+      showToast("Maroua Well's condition is critical",{ type: 'error' })
+    },2000)
   }, []);
 
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center flex-wrap gap-y-3">
         <h2 className="text-xl font-semibold text-gray-900">Infrastructure Assets Management</h2>
-        <div className="flex space-x-3 ">
+        <div className="flex space-x-3 flex-wrap gap-y-3">
           <button type="button" className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700" onClick={() => setShowAddModal(true)}>
             + Add Asset
           </button>
           <button type="button" className="flex items-center px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700" onClick={() => setShowCsvModal(true)}>
-            Import CSV
+            Import excel file
           </button>
           <button type="button" className="flex items-center px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700" onClick={handleExportPDF} disabled={exporting} title="Export as PDF">
             <Download className="h-4 w-4 mr-2" />
@@ -248,14 +255,14 @@ const InfrastructureAssets: React.FC = () => {
           </button>
           <button type="button" className="flex items-center px-4 py-2 bg-gray-600 text-white rounded-md hover:bg-gray-700" onClick={handleExportCSV} title="Export as CSV">
             <Download className="h-4 w-4 mr-2" />
-            Export as CSV
+            Export as excel file
           </button>
         </div>
       </div>
       {/* Add Asset Modal */}
       {showAddModal && (
-        <div className="fixed inset-0 bg-[#00000066] h-screen bg-opacity-30 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg shadow-lg p-6 w-full max-w-md">
+        <div className="fixed inset-0 bg-[#00000066] h-screen bg-opacity-30  flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg shadow-lg p-6 w-full max-w-md mx-2">
             <h3 className="text-lg font-semibold mb-4">Add New Asset</h3>
             <div className="space-y-3">
               <input className="w-full border rounded px-2 py-1" placeholder="Asset Name" value={newAsset.asset_name} onChange={e => setNewAsset({ ...newAsset, asset_name: e.target.value })} />
@@ -276,7 +283,7 @@ const InfrastructureAssets: React.FC = () => {
       {/* CSV Import Modal */}
       {showCsvModal && (
         <div className="fixed inset-0 bg-[#00000066] h-screen bg-opacity-30 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg shadow-lg p-6 w-full max-w-lg">
+          <div className="bg-white rounded-lg shadow-lg p-6 w-full max-w-lg mx-2">
             <h3 className="text-lg font-semibold mb-4">Import Assets from file(excel or csv)</h3>
             <CsvToJsonUpload onDataParsed={handleCsvExtract} />
             <div className="flex justify-end mt-4">

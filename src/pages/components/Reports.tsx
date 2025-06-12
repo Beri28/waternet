@@ -1,4 +1,4 @@
-import { useState} from 'react';
+import { useEffect, useState} from 'react';
 import { Plus, AlertTriangle, MapPin, Download, Filter } from 'lucide-react';
 import { BarChart } from '@mui/x-charts/BarChart';
 import { PieChart } from '@mui/x-charts/PieChart';
@@ -6,7 +6,8 @@ import { LineChart } from '@mui/x-charts/LineChart';
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas'; 
 import autoTable from 'jspdf-autotable';
-import ReportPreview from './ReportPreview';
+import { useToast } from '../../Context/toastContext';
+// import ReportPreview from './ReportPreview';
 
 const Reports = () => {;
   const [reports, setReports] = useState([
@@ -279,7 +280,7 @@ const Reports = () => {;
     description: '',
     priority: 'Medium'
   });
-
+  const {showToast}=useToast()
   const [showNewReport, setShowNewReport] = useState(false);
   const [showReportPreview, setShowReportPreview] = useState(false);
   const [regionFilter, setRegionFilter] = useState<string>('All');
@@ -460,18 +461,18 @@ const Reports = () => {;
     URL.revokeObjectURL(url);
   };
 
-  const handleExportJSON = () => {
-    const json = JSON.stringify(filteredReports, null, 2);
-    const blob = new Blob([json], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'report-summary.json';
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
-  };
+  // const handleExportJSON = () => {
+  //   const json = JSON.stringify(filteredReports, null, 2);
+  //   const blob = new Blob([json], { type: 'application/json' });
+  //   const url = URL.createObjectURL(blob);
+  //   const a = document.createElement('a');
+  //   a.href = url;
+  //   a.download = 'report-summary.json';
+  //   document.body.appendChild(a);
+  //   a.click();
+  //   document.body.removeChild(a);
+  //   URL.revokeObjectURL(url);
+  // };
 
   const getPriorityColor = (priority:any) => {
     switch (priority) {
@@ -481,12 +482,20 @@ const Reports = () => {;
       default: return 'text-gray-600 bg-gray-100';
     }
   };
-
+  
+  useEffect(()=>{
+    setTimeout(()=>{
+      showToast("New leak at Bamenda District 3 was just reported",{ type: 'warning' })
+    },1000)
+    setTimeout(()=>{
+      showToast("Shortage at Douala Central was just reported",{ type: 'warning' })
+    },2000)
+  },[])
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center flex-wrap gap-y-3">
         <h2 className="text-xl font-semibold text-gray-900">Reports & Incidents</h2>
-        <div className="flex gap-2">
+        <div className="flex gap-2 flex-wrap">
           <button
             onClick={() => setShowNewReport(true)}
             className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
@@ -499,7 +508,7 @@ const Reports = () => {;
             className="flex items-center px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700"
           >
             <Download className="h-4 w-4 mr-2" />
-            Generate Report
+            Generate Overview Report
           </button>
         </div>
       </div>
@@ -587,13 +596,13 @@ const Reports = () => {;
 
       {showReportPreview && (
         <div id="report-preview-pdf" className="bg-white rounded-lg shadow-md p-6 mb-6">
-          <div className="flex justify-between items-center mb-4">
+          <div className="flex justify-between items-center mb-4 flex-wrap gap-y-3">
             <h3 className="text-lg font-semibold">Report Summary</h3>
-            <div className="flex gap-2">
+            <div className="flex gap-2 flex-wrap">
               <button onClick={handleExportPDF} className="px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700">Export as PDF</button>
               <button onClick={handleExportCSV} className="px-3 py-1 bg-green-600 text-white rounded hover:bg-green-700">Export as CSV</button>
-              <button onClick={handleExportJSON} className="px-3 py-1 bg-orange-600 text-white rounded hover:bg-orange-700">Export as JSON</button>
-              <button onClick={() => setShowReportPreview(false)} className="text-gray-500 hover:text-gray-800 ml-2">Close</button>
+              {/* <button onClick={handleExportJSON} className="px-3 py-1 bg-orange-600 text-white rounded hover:bg-orange-700">Export as JSON</button> */}
+              <button onClick={() => setShowReportPreview(false)} className="px-3 py-1 bg-orange-600 text-white rounded hover:bg-orange-700">Close</button>
             </div>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
@@ -787,7 +796,7 @@ const Reports = () => {;
           </table>
         </div>
       </div>
-      <ReportPreview showReportPreview={true} reports={reports} />
+      {/* <ReportPreview showReportPreview={true} reports={reports} /> */}
     </div>
   );
 };

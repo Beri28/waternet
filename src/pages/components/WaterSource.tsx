@@ -5,8 +5,10 @@ import Chart from 'chart.js/auto';
 import jsPDF from 'jspdf';
 import CsvToJsonUpload from './csv_upload/CsvToJsonUpload';
 import OcrReader from './OcrReader';
+import { useToast } from '../../Context/toastContext';
 
 const WaterSources = () => {
+  const {showToast}=useToast()
   const [waterSources, setWaterSources] = useState([
     { id: 1, name: 'Mefou Dam', region: 'Centre', type: 'Reservoir', capacity: 100000, currentLevel: 40000, status: 'Active', lastUpdate: '2025-06-05' },
     { id: 2, name: 'Bamenda Borehole 1', region: 'Northwest', type: 'Borehole', capacity: 5000, currentLevel: 3200, status: 'Active', lastUpdate: '2025-06-04' },
@@ -29,6 +31,9 @@ const WaterSources = () => {
   };
   useEffect(()=>{
     setWaterSources(waterSources)
+    setTimeout(()=>{
+      showToast("Maroua Well's' water level is very low",{ type: 'error' })
+    },1000)
   },[])
   const chartRefs = {
     bar: useRef<ChartRef['current']>(null),
@@ -273,6 +278,7 @@ const WaterSources = () => {
       setImportError('Failed to extract table from OCR text. Please check the format.');
     }
   };
+  
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center flex-wrap gap-y-3">
@@ -298,7 +304,7 @@ const WaterSources = () => {
       {/* Add Source Modal */}
       {showAddModal && (
         <div className="fixed inset-0 bg-[#00000066] h-screen bg-opacity-30 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg shadow-lg p-6 w-full max-w-md">
+          <div className="bg-white rounded-lg shadow-lg p-6 w-full max-w-md mx-2">
             <h3 className="text-lg font-semibold mb-4">Add New Water Source</h3>
             <div className="space-y-3">
               <input className="w-full border rounded px-2 py-1" placeholder="Source Name" value={newSource.name} onChange={e => setNewSource({ ...newSource, name: e.target.value })} />
@@ -320,7 +326,7 @@ const WaterSources = () => {
       {/* Import Data Modal */}
       {showImportModal && (
         <div className="fixed inset-0 bg-[#00000066] h-screen bg-opacity-30 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg shadow-lg p-6 w-full max-w-lg">
+          <div className="bg-white rounded-lg shadow-lg p-6 w-full max-w-lg mx-2">
             <h3 className="text-lg font-semibold mb-4">Import Water Sources</h3>
             {importStep === 'choose' && (
               <div className="space-y-4">
