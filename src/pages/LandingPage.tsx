@@ -302,7 +302,7 @@ const handleReportSubmit = (e: React.FormEvent) => {
             Join the WaterNet platform and contribute to a more efficient, transparent, and sustainable water future.
           </p>
           <Button onClick={onLoginClick} size="large" className="bg-white text-blue-700 hover:bg-gray-100 transform hover:scale-105 transition-transform duration-300 shadow-lg">
-            Login to WaterNet
+            Signup 
           </Button>
         </div>
       </section>
