@@ -136,19 +136,19 @@ const MeterReadings: React.FC = () => {
     }
   };
 
-  const handleExportJSON = () => {
-    try {
-      const blob = new Blob([JSON.stringify(filteredReadings, null, 2)], { type: 'application/json' });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = 'meter_readings.json';
-      a.click();
-      URL.revokeObjectURL(url);
-    } catch (e) {
-      setExportError('JSON export failed.');
-    }
-  };
+  // const handleExportJSON = () => {
+  //   try {
+  //     const blob = new Blob([JSON.stringify(filteredReadings, null, 2)], { type: 'application/json' });
+  //     const url = URL.createObjectURL(blob);
+  //     const a = document.createElement('a');
+  //     a.href = url;
+  //     a.download = 'meter_readings.json';
+  //     a.click();
+  //     URL.revokeObjectURL(url);
+  //   } catch (e) {
+  //     setExportError('JSON export failed.');
+  //   }
+  // };
 
   const handleExportPDF = async () => {
     setExporting(true);
@@ -185,7 +185,7 @@ const MeterReadings: React.FC = () => {
   },[])
   return (
     <div className="space-y-6">
-      <div className="flex justify-between items-center">
+      <div className="flex justify-between items-center flex-wrap gap-y-3">
         <h2 className="text-xl font-semibold text-gray-900">Meter Readings Management</h2>
         <div className="flex space-x-3">
           <button className="flex items-center px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700" onClick={handleExportPDF} disabled={exporting} title="Export as PDF">
@@ -196,10 +196,10 @@ const MeterReadings: React.FC = () => {
             <Download className="h-4 w-4 mr-2" />
             CSV
           </button>
-          <button className="flex items-center px-4 py-2 bg-yellow-600 text-white rounded-md hover:bg-yellow-700" onClick={handleExportJSON} title="Export as JSON">
+          {/* <button className="flex items-center px-4 py-2 bg-yellow-600 text-white rounded-md hover:bg-yellow-700" onClick={handleExportJSON} title="Export as JSON">
             <Download className="h-4 w-4 mr-2" />
             JSON
-          </button>
+          </button> */}
         </div>
       </div>
       {/* Filters */}

@@ -2,7 +2,7 @@ import React, { useState, useEffect, createContext, useContext } from 'react';
 import OcrReader from './components/OcrReader';
 import { Droplets, Menu } from 'lucide-react';
 import ReportPreview from './components/ReportPreview';
-import {Box, FormControlLabel, Radio, RadioGroup } from '@mui/material';
+import {Avatar, Box, FormControlLabel, Radio, RadioGroup } from '@mui/material';
 
 // --- Global Tailwind CSS (usually in index.css or main.css) ---
 // This would typically be imported from a CSS file. For this self-contained immersive,
@@ -273,6 +273,17 @@ const mockData = {
       username: 'field_officer_douala',
       email: 'marie.ngono@camwater.cm',
       full_name: 'Marie Ngono',
+      role: 'Field Officer',
+      org_id: 'org-camwater',
+      is_active: true,
+      last_login: '2024-06-07T14:15:00Z',
+      created_at: '2023-03-20T10:30:00Z',
+    },
+    {
+      user_id: 'user-004',
+      username: 'field',
+      email: 'paul.ngono@camwater.cm',
+      full_name: 'Paul Ngono',
       role: 'Field Officer',
       org_id: 'org-camwater',
       is_active: true,
@@ -863,10 +874,10 @@ const FieldOfficerLayout: React.FC<FieldOfficerLayoutProps> = ({
             </div>
             <h2 className="text-xl font-semibold text-gray-800 capitalize ml-2">{currentPage.replace('-', ' ')}</h2>
           </div>
-          <div className="hidden md:block">
-            <span className="text-gray-700">Hello, {currentFieldOfficer?.full_name.split(' ')[0]}!</span>
+          <div className="flex gap-x-2 items-center">
+            <span className="text-gray-700 hidden md:flex">Hello, {currentFieldOfficer?.full_name.split(' ')[0]}!</span>
+            <Avatar>{currentFieldOfficer?.full_name[0]}</Avatar>
           </div>
-          
         </header>
         <main className="flex-1 overflow-x-hidden overflow-y-auto bg-gray-100 p-4 md:p-6">
           {children}
@@ -932,7 +943,7 @@ const FieldOfficerLoginPage: React.FC<{ setCurrentPage: (page: string) => void }
           {isLoading ? 'Logging In...' : 'Login'}
         </Button>
         <p className="text-center text-sm text-gray-600 mt-6">
-          Hint: Use `field_officer_douala` or `field_officer_yaounde` with password `field`.
+          Hint: Use `field or `field_officer_yaounde` with password `field`.
         </p>
       </div>
     </div>

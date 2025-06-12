@@ -43,7 +43,7 @@ const Button: React.FC<ButtonProps> = ({
       break;
     case 'primary':
     default:
-      baseStyles += ' bg-blue-600 text-white hover:bg-blue-700 focus:ring-blue-500';
+      baseStyles += ' bg-blue-600 hover:bg-blue-700 focus:ring-blue-500';
       break;
   }
 
@@ -104,13 +104,32 @@ const LandingPage: React.FC<LandingPageProps> = () => {
   const onLoginClick=()=>{
     navigate('/login')
   }
+  const [showReportModal, setShowReportModal] = React.useState(false);
+const [reportType, setReportType] = React.useState('Leak');
+const [location, setLocation] = React.useState('');
+const [description, setDescription] = React.useState('');
+const [contact, setContact] = React.useState('');
+const [submitted, setSubmitted] = React.useState(false);
+
+const handleReportSubmit = (e: React.FormEvent) => {
+  e.preventDefault();
+  setSubmitted(true);
+  setTimeout(() => {
+    setShowReportModal(false);
+    setSubmitted(false);
+    setReportType('Leak');
+    setLocation('');
+    setDescription('');
+    setContact('');
+  }, 2000);
+};
   return (
     <div className="min-h-screen bg-gray-50 text-gray-800 font-inter antialiased">
       {/* Header/Navigation */}
       <header className="fixed w-full z-50 bg-white shadow-sm py-4 px-6 md:px-12 flex justify-between items-center rounded-b-lg">
         <h1 className="text-2xl font-bold text-blue-600 flex items-center"><Droplets className="h-8 w-8 text-blue-600 mr-3" />WaterNet Cameroon</h1>
         <nav>
-          <Button onClick={onLoginClick} variant="primary">
+          <Button onClick={onLoginClick} variant="primary" className='text-white' >
             Login
           </Button>
         </nav>
@@ -125,16 +144,56 @@ const LandingPage: React.FC<LandingPageProps> = () => {
           </svg>
         </div>
         <div className="relative z-10 text-center max-w-4xl mx-auto px-4">
-          <h2 className="text-5xl md:text-6xl font-extrabold leading-tight mb-6 animate-fade-in-up">
+          <h2 className="text-3xl md:text-6xl font-extrabold leading-tight mb-6 animate-fade-in-up">
             WaterNet Cameroon: <br /> Managing Water Resources for a Sustainable Future
           </h2>
-          <p className="text-xl md:text-2xl opacity-90 mb-10 animate-fade-in-up delay-200">
+          <p className="text-lg md:text-2xl opacity-90 mb-10 animate-fade-in-up delay-200">
             Empowering effective water resource management and distribution across Cameroon through data-driven insights and collaborative tools.
           </p>
-          <Button onClick={onLoginClick} size="large" className="bg-blue-200 text-blue-700 hover:bg-gray-100 hover:text-black transform hover:scale-101 transition-transform duration-500 animate-fade-in-up delay-400 shadow-lg">
-            Get Started (Login)
+          <Button size="large" className="bg-blue-200 text-white hover:bg-gray-100 hover:text-black transform hover:scale-101 transition-transform duration-500 animate-fade-in-up delay-400 shadow-lg" onClick={() => setShowReportModal(true)}>
+            Report issue
           </Button>
         </div>
+        {/* Citizen Report Modal */}
+        {showReportModal && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#00000066] h-screen bg-opacity-40">
+            <div className="bg-white rounded-2xl shadow-2xl p-8 w-full max-w-md relative mx-2">
+              <button className="absolute top-3 right-3 text-gray-400 hover:text-gray-700 text-2xl" onClick={() => setShowReportModal(false)}>&times;</button>
+              {!submitted ? (
+                <form onSubmit={handleReportSubmit} className="space-y-5">
+                  <h3 className="text-2xl font-bold text-blue-700 mb-2 text-center">Submit a Report</h3>
+                  <div>
+                    <label className="block text-gray-700 font-medium mb-1">Report Type</label>
+                    <select title='type' value={reportType} onChange={e => setReportType(e.target.value)} className="w-full border rounded px-3 py-2 bg-gray-400">
+                      <option value="Leak">Leak</option>
+                      <option value="Shortage">Shortage</option>
+                      <option value="Quality">Quality Issue</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-gray-700 font-medium mb-1">Location</label>
+                    <input type="text" value={location} onChange={e => setLocation(e.target.value)} className="w-full border rounded px-3 py-2 bg-gray-400" placeholder="e.g. Bonaberi, Douala" required />
+                  </div>
+                  <div>
+                    <label className="block text-gray-700 font-medium mb-1">Description</label>
+                    <textarea value={description} onChange={e => setDescription(e.target.value)} className="w-full border rounded px-3 py-2 bg-gray-400" rows={3} placeholder="Describe the issue..." required />
+                  </div>
+                  <div>
+                    <label className="block text-gray-700 font-medium mb-1">Contact Info (optional)</label>
+                    <input type="text" value={contact} onChange={e => setContact(e.target.value)} className="w-full border rounded px-3 py-2 bg-gray-400" placeholder="Phone or email (optional)" />
+                  </div>
+                  <Button type="submit" size="large" className="w-full bg-blue-600 text-white hover:bg-blue-700 mt-2">Submit Report</Button>
+                </form>
+              ) : (
+                <div className="flex flex-col items-center justify-center py-8">
+                  <Droplets size={48} className="text-blue-500 mb-4 animate-pulse" />
+                  <h4 className="text-xl font-bold text-blue-700 mb-2">Thank you for your report!</h4>
+                  <p className="text-gray-700 text-center">Your submission has been received and will be reviewed by our team.</p>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
       </section>
 
       {/* About Section */}

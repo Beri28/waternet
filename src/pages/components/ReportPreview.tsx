@@ -71,7 +71,7 @@ const ReportPreview: React.FC<ReportPreviewProps> = ({ reports,showReportPreview
       {/* CSV Upload & Text Parse UI */}
       <div className="mb-6 p-4 bg-gray-50 rounded shadow">
         <h3 className="font-semibold mb-2">Upload CSV or Paste Data</h3>
-        <input title='file' type="file" accept=".csv,text/csv" placeholder='Click here to upload file' onChange={handleFileUpload} className="mb-2 bg-slate-300 p-4 rounded-sm" />
+        <input title='file' type="file" accept=".csv,text/csv" placeholder='Click here to upload file' onChange={handleFileUpload} className="mb-2 bg-slate-300 p-4 rounded-sm w-full" />
         <div className="my-2">or</div>
         <textarea
           className="w-full border rounded p-2 mb-2"
@@ -91,7 +91,7 @@ const ReportPreview: React.FC<ReportPreviewProps> = ({ reports,showReportPreview
         )}
       </div>
       {showReportPreview &&
-      <div ref={previewRef} className="bg-white p-4 rounded shadow mb-4">
+      <div ref={previewRef} className="bg-white p-4 rounded shadow mb-4 w-full">
         <h2 className="text-xl font-bold mb-2">Report Preview</h2>
         {/* Simple Chart Visualization */}
         <div className="mb-6">
@@ -126,30 +126,32 @@ const ReportPreview: React.FC<ReportPreviewProps> = ({ reports,showReportPreview
             })()}
           </div>
         </div>
-        <table className="min-w-full divide-y divide-gray-200">
-          <thead className="bg-gray-50">
-            <tr>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Type</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Location</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Reporter</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Priority</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
-            </tr>
-          </thead>
-          <tbody className="bg-white divide-y divide-gray-200">
-            {reports.map((report) => (
-              <tr key={report.id}>
-                <td className="px-6 py-4 whitespace-nowrap">{report.type}</td>
-                <td className="px-6 py-4 whitespace-nowrap">{report.location}</td>
-                <td className="px-6 py-4 whitespace-nowrap">{report.reporter}</td>
-                <td className="px-6 py-4 whitespace-nowrap">{report.priority}</td>
-                <td className="px-6 py-4 whitespace-nowrap">{report.status}</td>
-                <td className="px-6 py-4 whitespace-nowrap">{report.date}</td>
+        <div className='overflow-x-auto'>
+          <table className="min-w-full divide-y divide-gray-200">
+            <thead className="bg-gray-50">
+              <tr>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Type</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Location</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Reporter</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Priority</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody className="bg-white divide-y divide-gray-200">
+              {reports.map((report) => (
+                <tr key={report.id}>
+                  <td className="px-6 py-4 whitespace-nowrap">{report.type}</td>
+                  <td className="px-6 py-4 whitespace-nowrap">{report.location}</td>
+                  <td className="px-6 py-4 whitespace-nowrap">{report.reporter}</td>
+                  <td className="px-6 py-4 whitespace-nowrap">{report.priority}</td>
+                  <td className="px-6 py-4 whitespace-nowrap">{report.status}</td>
+                  <td className="px-6 py-4 whitespace-nowrap">{report.date}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
         <button onClick={handleGeneratePreview} className="px-4 py-2 bg-blue-600 text-white rounded mr-2 mt-4">Generate Preview</button>
       </div>
       }

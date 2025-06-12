@@ -142,19 +142,19 @@ const QualityTests: React.FC = () => {
     }
   };
 
-  const handleExportJSON = () => {
-    try {
-      const blob = new Blob([JSON.stringify(filteredTests, null, 2)], { type: 'application/json' });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = 'quality_tests.json';
-      a.click();
-      URL.revokeObjectURL(url);
-    } catch (e) {
-      setExportError('JSON export failed.');
-    }
-  };
+  // const handleExportJSON = () => {
+  //   try {
+  //     const blob = new Blob([JSON.stringify(filteredTests, null, 2)], { type: 'application/json' });
+  //     const url = URL.createObjectURL(blob);
+  //     const a = document.createElement('a');
+  //     a.href = url;
+  //     a.download = 'quality_tests.json';
+  //     a.click();
+  //     URL.revokeObjectURL(url);
+  //   } catch (e) {
+  //     setExportError('JSON export failed.');
+  //   }
+  // };
 
   const handleExportPDF = async () => {
     setExporting(true);
@@ -191,9 +191,9 @@ const QualityTests: React.FC = () => {
   },[])
   return (
     <div className="space-y-6">
-      <div className="flex justify-between items-center">
+      <div className="flex justify-between items-center flex-wrap gap-y-3">
         <h2 className="text-xl font-semibold text-gray-900">Water Quality Tests Management</h2>
-        <div className="flex space-x-3">
+        <div className="flex space-x-3 flex-wrap gap-y-2">
           <button className="flex items-center px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700" onClick={handleExportPDF} disabled={exporting} title="Export as PDF">
             <Download className="h-4 w-4 mr-2" />
             PDF
@@ -202,18 +202,18 @@ const QualityTests: React.FC = () => {
             <Download className="h-4 w-4 mr-2" />
             CSV
           </button>
-          <button className="flex items-center px-4 py-2 bg-yellow-600 text-white rounded-md hover:bg-yellow-700" onClick={handleExportJSON} title="Export as JSON">
+          {/* <button className="flex items-center px-4 py-2 bg-yellow-600 text-white rounded-md hover:bg-yellow-700" onClick={handleExportJSON} title="Export as JSON">
             <Download className="h-4 w-4 mr-2" />
             JSON
-          </button>
+          </button> */}
         </div>
       </div>
       {/* Filters */}
-      <div className="flex space-x-4 items-center">
+      <div className="flex space-x-4 items-center ">
         <label htmlFor="region-filter" className="flex items-center text-sm font-medium text-gray-700">
           <Filter className="h-4 w-4 mr-1" />
           Region:
-        </label>
+        
         <select
           id="region-filter"
           title="Filter by region"
@@ -225,10 +225,11 @@ const QualityTests: React.FC = () => {
             <option key={region} value={region}>{region}</option>
           ))}
         </select>
+        </label>
         <label htmlFor="status-filter" className="flex items-center text-sm font-medium text-gray-700">
           <Filter className="h-4 w-4 mr-1" />
           Status:
-        </label>
+        
         <select
           id="status-filter"
           title="Filter by status"
@@ -240,6 +241,7 @@ const QualityTests: React.FC = () => {
             <option key={status} value={status}>{status}</option>
           ))}
         </select>
+        </label>
       </div>
       {/* Summary metrics */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">

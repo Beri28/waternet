@@ -49,7 +49,7 @@ const OcrReader: React.FC = () => {
         accept="image/*"
         ref={fileInputRef}
         onChange={handleFileChange}
-        className="mb-4 bg-slate-300 p-4 rounded-sm"
+        className="mb-4 bg-slate-300 p-4 rounded-sm w-full"
       />
       {image && (
         <div className="mb-4">

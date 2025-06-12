@@ -625,6 +625,30 @@ const mockData = {
       uploaded_by_user_id: 'user-004',
       created_at: '2023-10-15T16:00:00Z',
     },
+    {
+      survey_id: 'survey-002',
+      org_id: 'org-wateraid',
+      survey_date: '2023-06-25',
+      village_id: 'vil-njoss',
+      water_access_rate_percent: 85.0,
+      sanitation_status: 'Unimproved',
+      groundwater_level_meters: 15.2,
+      other_survey_details: { notes: 'Community expressed need for more tanks.' },
+      uploaded_by_user_id: 'user-004',
+      created_at: '2023-10-15T16:00:00Z',
+    },
+    {
+      survey_id: 'survey-003',
+      org_id: 'org-wateraid',
+      survey_date: '2023-06-15',
+      village_id: 'vil-ntaki',
+      water_access_rate_percent: 55.0,
+      sanitation_status: 'Unimproved',
+      groundwater_level_meters: 15.2,
+      other_survey_details: { notes: 'Community expressed need for more boreholes.' },
+      uploaded_by_user_id: 'user-004',
+      created_at: '2023-10-15T16:00:00Z',
+    },
   ] as SurveyData[],
   budgetAllocations: [
     {
@@ -1154,16 +1178,17 @@ export const LoginPage= () => {
           <Button onClick={() => handleLogin('Planner')} disabled={isLoading} className="w-full bg-gradient-to-r from-blue-600 to-cyan-500 py-3 px-6 rounded-lg font-medium hover:from-blue-700 hover:to-cyan-600 transform hover:scale-[1.02] transition-all duration-200 shadow-lg disabled:opacity-50 disabled:cursor-not-allowed">
             {loading ? <CircularProgress color='inherit' size={30} /> : 'Login'}
           </Button>
-          {/* <Button onClick={() => handleLogin('Field Officer')} disabled={isLoading} className="w-full" variant="outlined">
-            {isLoading ? <CircularProgress color='info' size={30} /> : 'Login as Field Officer'}
-          </Button> */}
+          
           {/* <Button onClick={() => handleLogin('NGO User')} disabled={isLoading} className="w-full" variant="secondary">
             {isLoading ? 'Logging In...' : 'Login as NGO User'}
           </Button> */}
         </div>
         <p className="text-center text-sm text-gray-600 mt-6">
-          Hint: Use username/password as `admin/admin`, `field/field`, for demo account.
+          Hint: Use username/password as `admin/admin`, for demo account.
         </p>
+        <Button onClick={() => navigate('/worker')} disabled={isLoading} className="w-full my-2" variant="outlined">
+            {isLoading ? <CircularProgress color='info' size={30} /> : 'Login as Field Officer'}
+          </Button>
       </div>
     </div>
   );
@@ -2088,7 +2113,7 @@ export const SurveyDataPage: React.FC = () => {
   if (error) return <div className="text-center p-6 text-red-600">Error: {error}</div>;
 
   return (
-    <div className="bg-white rounded-lg shadow p-6">
+    <div className="bg-white rounded-lg shadow md:p-6 p-3">
       <h2 className="text-2xl font-bold text-gray-800 mb-6">Survey Data</h2>
       <Table data={surveys} columns={columns} keyAccessor="survey_id" />
     </div>
@@ -2171,7 +2196,7 @@ export const BudgetAllocationsPage: React.FC = () => {
 
   return (
     <div className="bg-white rounded-lg shadow p-6">
-      <div className="flex justify-between items-center mb-6">
+      <div className="flex justify-between items-center mb-6 flex-wrap gap-y-3">
         <h2 className="text-2xl font-bold text-gray-800">Budget Allocations</h2>
         <Button onClick={() => { setEditingAllocation({
           allocation_year: new Date().getFullYear(),

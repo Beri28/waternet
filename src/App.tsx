@@ -17,7 +17,7 @@ function App() {
     <ToastProvider
         containerProps={{
             position: 'top-right', // Default position
-            autoClose: 3000, // Default auto-close time
+            autoClose: 4000, // Default auto-close time
             hideProgressBar: false,
             closeOnClick: true,
             pauseOnHover: true,
