@@ -1184,7 +1184,7 @@ export const LoginPage= () => {
           </Button> */}
         </div>
         <p className="text-center text-sm text-gray-600 mt-6">
-          Hint: Use username/password as `admin/admin`, for demo account.
+          Hint: Use `admin/admin` as username/password, for demo account.
         </p>
         <Button onClick={() => navigate('/worker')} disabled={isLoading} className="w-full my-2" variant="outlined">
             {isLoading ? <CircularProgress color='info' size={30} /> : 'Login as Field Officer'}
