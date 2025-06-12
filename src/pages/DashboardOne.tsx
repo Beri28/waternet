@@ -520,7 +520,7 @@ export default function WaterManagementDashboard() {
             />
           ))}
           {/* Water Sources */}
-          {mapSourceCoords.map((source, i) => (
+          {mapSourceCoords.map((source) => (
             <circle
               key={source.id}
               cx={source.x}
