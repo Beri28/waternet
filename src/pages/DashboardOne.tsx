@@ -466,54 +466,147 @@ export default function WaterManagementDashboard() {
     </div>
   );
 
+  const infrastructureAssets = [
+    { id: 'A1', name: 'Pump Station', type: 'pump', status: 'active', x: 60, y: 220 },
+    { id: 'A2', name: 'Treatment Plant', type: 'treatment', status: 'inactive', x: 320, y: 60 },
+    { id: 'A3', name: 'Storage Tank', type: 'tank', status: 'active', x: 200, y: 150 },
+  ];
+
+  const pipelineSegments = [
+    // Connect water sources to assets and each other
+    { from: { x: 60, y: 220 }, to: { x: 200, y: 150 }, status: 'active' }, // Pump to Tank
+    { from: { x: 200, y: 150 }, to: { x: 320, y: 60 }, status: 'inactive' }, // Tank to Treatment
+    { from: { x: 60, y: 220 }, to: { x: 20, y: 80 }, status: 'active' }, // Pump to Source 1
+    { from: { x: 320, y: 60 }, to: { x: 380, y: 200 }, status: 'maintenance' }, // Treatment to Source 2
+  ];
+
+  const mapSourceCoords = filteredSources.map((source, i) => {
+    // Distribute sources on the map for demo
+    const coords = [
+      { x: 20, y: 80 },
+      { x: 380, y: 200 },
+      { x: 120, y: 40 },
+      { x: 300, y: 250 },
+      { x: 200, y: 120 },
+    ];
+    return { ...source, ...coords[i % coords.length] };
+  });
+
   const SimpleMap = () => (
     <div className="bg-white rounded-lg md:p-6 shadow-lg border border-gray-200">
-      <h3 className="text-lg font-semibold text-gray-900 mb-4 p-3">Water Sources Map</h3>
+      <h3 className="text-lg font-semibold text-gray-900 mb-4 p-3">Water Network Map</h3>
       <div className="relative bg-gradient-to-br from-blue-50 to-cyan-50 rounded-lg h-96 overflow-hidden">
-        {/* Simulated map background */}
-        <div className="absolute inset-0 opacity-30">
-          <svg viewBox="0 0 400 300" className="w-full h-full">
-            <defs>
-              <pattern id="grid" width="20" height="20" patternUnits="userSpaceOnUse">
-                <path d="M 20 0 L 0 0 0 20" fill="none" stroke="#cbd5e1" strokeWidth="0.5"/>
-              </pattern>
-            </defs>
-            <rect width="100%" height="100%" fill="url(#grid)" />
-          </svg>
-        </div>
-        
-        {/* Simulated water sources on map */}
-        {filteredSources.map((source, index) => (
-          <div
-            key={source.id}
-            className={`absolute w-4 h-4 rounded-full border-2 border-white shadow-lg cursor-pointer hover:scale-125 transition-transform ${
-              source.status === 'active' ? 'bg-green-500' :
-              source.status === 'maintenance' ? 'bg-yellow-500' : 'bg-red-500'
-            }`}
-            style={{
-              left: `${20 + (index * 80) % 300}px`,
-              top: `${50 + (index * 60) % 200}px`
-            }}
-            title={`${source.name} - ${source.village}`}
-          />
-        ))}
-        
+        {/* SVG Map Layer */}
+        <svg viewBox="0 0 400 300" className="absolute inset-0 w-full h-full">
+          {/* Grid */}
+          <defs>
+            <pattern id="grid" width="20" height="20" patternUnits="userSpaceOnUse">
+              <path d="M 20 0 L 0 0 0 20" fill="none" stroke="#cbd5e1" strokeWidth="0.5" />
+            </pattern>
+          </defs>
+          <rect width="400" height="300" fill="url(#grid)" />
+          {/* Pipelines */}
+          {pipelineSegments.map((seg, i) => (
+            <line
+              key={i}
+              x1={seg.from.x}
+              y1={seg.from.y}
+              x2={seg.to.x}
+              y2={seg.to.y}
+              stroke={seg.status === 'active' ? '#38bdf8' : seg.status === 'maintenance' ? '#facc15' : '#f87171'}
+              strokeWidth={seg.status === 'active' ? 4 : 2}
+              strokeDasharray={seg.status === 'maintenance' ? '6,4' : seg.status === 'inactive' ? '2,6' : '0'}
+              opacity={0.7}
+            />
+          ))}
+          {/* Water Sources */}
+          {mapSourceCoords.map((source, i) => (
+            <circle
+              key={source.id}
+              cx={source.x}
+              cy={source.y}
+              r="10"
+              fill={
+                source.status === 'active' ? '#22c55e' :
+                source.status === 'maintenance' ? '#facc15' : '#ef4444'
+              }
+              stroke="#fff"
+              strokeWidth="3"
+              style={{ filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.15))' }}
+            >
+            </circle>
+          ))}
+          {/* Infrastructure Assets */}
+          {infrastructureAssets.map(asset => (
+            <rect
+              key={asset.id}
+              x={asset.x - 8}
+              y={asset.y - 8}
+              width="16"
+              height="16"
+              rx="3"
+              fill={
+                asset.status === 'active' ? '#0ea5e9' : asset.status === 'inactive' ? '#d1d5db' : '#facc15'
+              }
+              stroke="#1e293b"
+              strokeWidth="2"
+            />
+          ))}
+          {/* Asset/Source Labels */}
+          {mapSourceCoords.map(source => (
+            <text
+              key={source.id + '-label'}
+              x={source.x + 14}
+              y={source.y + 4}
+              fontSize="11"
+              fill="#334155"
+              fontWeight="bold"
+            >
+              {source.name}
+            </text>
+          ))}
+          {infrastructureAssets.map(asset => (
+            <text
+              key={asset.id + '-label'}
+              x={asset.x + 12}
+              y={asset.y + 2}
+              fontSize="11"
+              fill="#0ea5e9"
+              fontWeight="bold"
+            >
+              {asset.name}
+            </text>
+          ))}
+          {/* Cool: Add animated water flow on active pipelines */}
+          {pipelineSegments.filter(seg => seg.status === 'active').map((seg, i) => (
+            <circle
+              key={'flow-' + i}
+              cx={(seg.from.x + seg.to.x) / 2}
+              cy={(seg.from.y + seg.to.y) / 2}
+              r="4"
+              fill="#38bdf8"
+              opacity="0.7"
+            >
+              <animate
+                attributeName="r"
+                values="4;7;4"
+                dur="1.2s"
+                repeatCount="indefinite"
+              />
+            </circle>
+          ))}
+        </svg>
         {/* Map legend */}
-        <div className="absolute bottom-4 left-4 bg-white rounded-lg p-3 shadow-lg">
+        <div className="absolute bottom-4 left-4 bg-white rounded-lg p-3 shadow-lg text-xs">
           <h4 className="font-medium text-gray-900 mb-2 text-sm">Legend</h4>
-          <div className="space-y-1 text-xs">
-            <div className="flex items-center">
-              <div className="w-3 h-3 bg-green-500 rounded-full mr-2"></div>
-              <span>Active</span>
-            </div>
-            <div className="flex items-center">
-              <div className="w-3 h-3 bg-yellow-500 rounded-full mr-2"></div>
-              <span>Maintenance</span>
-            </div>
-            <div className="flex items-center">
-              <div className="w-3 h-3 bg-red-500 rounded-full mr-2"></div>
-              <span>Inactive</span>
-            </div>
+          <div className="flex flex-col gap-1">
+            <div className="flex items-center"><span className="inline-block w-3 h-3 rounded-full bg-green-500 mr-2"></span>Active Source</div>
+            <div className="flex items-center"><span className="inline-block w-3 h-3 rounded-full bg-yellow-500 mr-2"></span>Maintenance Source</div>
+            <div className="flex items-center"><span className="inline-block w-3 h-3 bg-red-500 mr-2"></span>Inactive Source</div>
+            <div className="flex items-center"><span className="inline-block w-3 h-3 bg-sky-400 mr-2"></span>Active Pipeline</div>
+            <div className="flex items-center"><span className="inline-block w-3 h-3 bg-yellow-400 mr-2"></span>Maintenance Pipeline</div>
+            <div className="flex items-center"><span className="inline-block w-3 h-3 bg-gray-300 mr-2"></span>Inactive Asset</div>
+            <div className="flex items-center"><span className="inline-block w-3 h-3 bg-blue-500 mr-2"></span>Active Asset</div>
           </div>
         </div>
       </div>
